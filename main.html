@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Mcyor Labial — IT Student & Frontend Architect. Modern web experiences with 3D neon aesthetics."
+    />
+    <meta name="author" content="Mcyor Labial" />
+    <title>Mcyor Labial · 3D Neon Portfolio | Arcade Collection</title>
+
+    <!-- fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="aurora">
+      <div class="aurora-orb"></div>
+      <div class="aurora-orb"></div>
+      <div class="aurora-orb"></div>
+    </div>
+    <div id="particles"></div>
+
+    <div class="wrap">
+      <nav id="navbar">
+        <a
+          href="#"
+          class="logo"
+          onclick="
+            scrollToSection('about');
+            return false;
+          "
+          >mc<em>.</em>dev</a
+        >
+        <button class="hamburger" id="hamburgerBtn">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#" data-section="about" class="active">About</a></li>
+          <li><a href="#" data-section="skills">Skills</a></li>
+          <li><a href="#" data-section="projects">Projects</a></li>
+          <li><a href="#" data-section="games">Arcade</a></li>
+          <li><a href="#" data-section="achievements">Achievements</a></li>
+          <li><a href="#" data-section="contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <section id="about" class="section">
+        <div class="about-grid">
+          <div class="avatar-wrap reveal">
+            <div class="avatar">
+              <div class="avatar-ring"></div>
+              <div class="avatar-face">🧑‍🚀</div>
+            </div>
+            <div class="avail-badge pulse-glow">
+              <span class="avail-dot"></span>Open for collaborations
+            </div>
+          </div>
+          <div class="about-copy">
+            <div class="s-label reveal">Hello, World</div>
+            <h1 class="reveal blink-text">I'm <em>Mcyor</em><br />Labial</h1>
+            <p class="role-tag reveal blink-cyan">
+              FRONTEND ARCHITECT & CREATIVE DEVELOPER
+            </p>
+            <p class="bio reveal">
+              Building immersive digital experiences with a focus on performance
+              and aesthetics. Currently pushing boundaries in 3D web,
+              interactive storytelling, and futuristic UI/UX.
+            </p>
+            <div class="btn-row reveal">
+              <a href="cv.html" target="_blank" class="btn btn-solid"
+                >📄 Download Resume</a
+              >
+              <a
+                href="#"
+                class="btn btn-ghost"
+                onclick="
+                  scrollToSection('contact');
+                  return false;
+                "
+                >Let's Connect →</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card reveal blink-border">
+            <div class="stat-n" id="stat1">0+</div>
+            <div class="stat-l">Projects Shipped</div>
+          </div>
+          <div class="stat-card reveal blink-border">
+            <div class="stat-n" id="stat2">0+</div>
+            <div class="stat-l">Tech Stack</div>
+          </div>
+          <div class="stat-card reveal blink-border">
+            <div class="stat-n">3rd</div>
+            <div class="stat-l">Year IT · Visionary</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills" class="section">
+        <div class="s-label reveal">Technical Arsenal</div>
+        <div class="s-title reveal">Core <em>Expertise</em></div>
+        <div class="skills-grid" id="skillsGrid"></div>
+      </section>
+
+      <section id="projects" class="section">
+        <div class="s-label reveal">Recent Builds</div>
+        <div class="s-title reveal">Featured <em>Projects</em></div>
+        <div class="projects-grid" id="projectsGrid"></div>
+      </section>
+
+      <!-- GAMES ARCADE SECTION with functional links -->
+      <section id="games" class="section">
+        <div class="s-label reveal">🎮 Arcade Collection</div>
+        <div class="s-title reveal">3D Neon <em>Games</em></div>
+        <div class="games-grid" id="gamesGrid"></div>
+      </section>
+
+      <section id="achievements" class="section">
+        <div class="s-label reveal">Milestones</div>
+        <div class="s-title reveal">Honors & <em>Recognition</em></div>
+        <div class="ach-list" id="achList"></div>
+        <div class="timeline reveal">
+          <div class="tl-heading">🚀 Evolution Timeline</div>
+          <div class="tl-list">
+            <div class="tl-item">
+              <div class="tl-year">2022 · Foundation</div>
+              <div class="tl-ev">BS Information Technology</div>
+              <div class="tl-detail">
+                Algorithms, systems architecture, early web experiments.
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">2023 · Breakthrough</div>
+              <div class="tl-ev">Interactive Web & Game Dev</div>
+              <div class="tl-detail">
+                Built first real-time multiplayer prototype and design system.
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">2024 · Championship</div>
+              <div class="tl-ev">🏆 1st Place — National Hackathon</div>
+              <div class="tl-detail">
+                Full-stack AI-integrated solution delivered in 24h.
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">2025 · Specialization</div>
+              <div class="tl-ev">3D & Advanced Frontend</div>
+              <div class="tl-detail">
+                Three.js, WebGL, advanced state management, design tokens.
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">2026 · Present</div>
+              <div class="tl-ev blink-cyan">Open for ambitious roles</div>
+              <div class="tl-detail">
+                Seeking internships, freelance, or early-stage startup collabs.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section">
+        <div class="s-label reveal">Let's Connect</div>
+        <div class="s-title reveal">Get in <em>Touch</em></div>
+        <div class="contact-grid">
+          <div>
+            <p class="contact-intro" style="margin-bottom: 1.2rem">
+              Whether it's a bold idea, a collaboration, or just saying hi —
+              I'll respond within 24h.
+            </p>
+            <div class="contact-links">
+              <a href="mailto:mcyorlabial82@gmail.com" class="c-link"
+                ><div class="c-link-icon">📧</div>
+                <div>
+                  <div class="c-link-lbl">Email</div>
+                  <div class="c-link-val">mcyorlabial82@gmail.com</div>
+                </div></a
+              >
+              <a href="https://github.com/McAi82" class="c-link"
+                ><div>🐙</div>
+                <div>
+                  <div>GitHub</div>
+                  <div>github.com/McAi82</div>
+                </div></a
+              >
+              <a
+                href="https://www.linkedin.com/in/mc-yor-labial-498ab7399/"
+                class="c-link"
+                ><div>💼</div>
+                <div>
+                  <div>LinkedIn</div>
+                  <div>linkedin.com/in/mc-yor-labial</div>
+                </div></a
+              >
+            </div>
+          </div>
+          <div class="form-card blink-border">
+            <h3 style="margin-bottom: 1rem">Send a Signal</h3>
+            <form id="contactForm" onsubmit="handleFormSubmit(event)">
+              <div class="fg">
+                <label>Name</label><input type="text" required />
+              </div>
+              <div class="fg">
+                <label>Email</label><input type="email" required />
+              </div>
+              <div class="fg">
+                <label>Message</label><textarea rows="3" required></textarea>
+              </div>
+              <button type="submit" class="submit-btn pulse-glow">
+                Launch Message →
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+      <footer>
+        © 2026 Mcyor Labial · 3D Neon Portfolio ·
+        <span class="blink-cyan">Pushing the pixel frontier</span>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
