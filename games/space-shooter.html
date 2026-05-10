@@ -198,8 +198,6 @@
           <div class="stat">
             <span class="stat-value" id="shooterWave">1</span><span>WAVE</span>
           </div>
-          <button id="shooterStart">START GAME</button>
-          <button id="shooterReset">RESTART</button>
         </div>
         <div class="canvas-area">
           <canvas id="shooterCanvas" width="700" height="500"></canvas>
@@ -208,6 +206,17 @@
           <div class="touch-btn" id="moveLeftBtn">◀ LEFT</div>
           <div class="touch-btn" id="moveRightBtn">RIGHT ▶</div>
           <div class="touch-btn" id="fireBtn">🔫 FIRE</div>
+        </div>
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.6rem;
+          "
+        >
+          <button id="shooterStart">START GAME</button>
+          <button id="shooterReset">RESTART</button>
         </div>
         <div
           style="
@@ -485,7 +494,7 @@
 
           // Spawn enemies based on wave
           enemySpawnCounter++;
-          let spawnRate = Math.max(20, 50 - wave * 2);
+          let spawnRate = Math.max(40, 50 - wave * 2);
           if (enemySpawnCounter > spawnRate && enemies.length < 12 + wave) {
             enemySpawnCounter = 0;
             spawnEnemy();
