@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mcyor Labial · CV / Resume</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      @media print {
+        body {
+          background: white !important;
+          color: black !important;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .print-container {
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        .cv-card {
+          box-shadow: none !important;
+          border: 1px solid #ccc !important;
+        }
+      }
+      body {
+        background: radial-gradient(circle at 20% 30%, #03050b, #000);
+        font-family: "DM Sans", sans-serif;
+        padding: 2rem;
+        min-height: 100vh;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+      }
+      .cv-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+      }
+      .cv-card {
+        background: rgba(8, 12, 25, 0.92);
+        backdrop-filter: blur(12px);
+        border-radius: 32px;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        box-shadow:
+          0 25px 50px -12px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(0, 255, 255, 0.1) inset;
+        overflow: hidden;
+      }
+      .cv-header {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 229, 255, 0.15),
+          rgba(182, 36, 255, 0.1)
+        );
+        padding: 2rem;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+      }
+      .name {
+        font-family: "Syne", sans-serif;
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #0ff, #f0f, #b624ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+      }
+      .title {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 1rem;
+        color: #0ff;
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+      }
+      .contact-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        font-size: 0.8rem;
+        color: #a0b3d9;
+      }
+      .contact-bar span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .cv-body {
+        padding: 2rem;
+      }
+      .section {
+        margin-bottom: 2rem;
+      }
+      .section-title {
+        font-family: "Syne", sans-serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #0ff;
+        border-left: 3px solid #0ff;
+        padding-left: 1rem;
+        margin-bottom: 1.2rem;
+        text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      .skill-item {
+        margin-bottom: 1rem;
+      }
+      .skill-name {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        color: #eef5ff;
+      }
+      .skill-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .skill-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #0ff, #f0f);
+        border-radius: 10px;
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+      .exp-item {
+        margin-bottom: 1.2rem;
+      }
+      .exp-title {
+        font-weight: 700;
+        color: #0ff;
+      }
+      .exp-date {
+        font-size: 0.7rem;
+        color: #5e6f8d;
+        font-family: monospace;
+        margin-bottom: 0.3rem;
+      }
+      .exp-desc {
+        font-size: 0.85rem;
+        color: #a0b3d9;
+        line-height: 1.5;
+      }
+      .project-item {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 0.8rem;
+        border: 1px solid rgba(0, 255, 255, 0.1);
+      }
+      .project-title {
+        font-weight: 700;
+        color: #f0f;
+      }
+      .education-item {
+        margin-bottom: 1rem;
+      }
+      .btn-download {
+        background: linear-gradient(135deg, #0ff, #b624ff);
+        border: none;
+        padding: 0.8rem 1.8rem;
+        border-radius: 40px;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #000;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .btn-download:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      }
+      .badge {
+        display: inline-block;
+        background: rgba(0, 255, 255, 0.15);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 40px;
+        padding: 0.2rem 0.8rem;
+        font-size: 0.7rem;
+        color: #0ff;
+        margin-right: 0.5rem;
+        margin-bottom: 0.3rem;
+      }
+      hr {
+        border-color: rgba(0, 255, 255, 0.1);
+        margin: 1rem 0;
+      }
+      @media (max-width: 700px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+        .name {
+          font-size: 2rem;
+        }
+        .cv-header,
+        .cv-body {
+          padding: 1.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cv-container">
+      <div class="cv-card" id="cvContent">
+        <div class="cv-header">
+          <h1 class="name">MCYOR LABIAL</h1>
+          <div class="title">✦ FRONTEND ARCHITECT & CREATIVE DEVELOPER ✦</div>
+          <div class="contact-bar">
+            <span>📧 mcyorlabial82@gmail.com</span>
+            <span>📱 09555049622</span>
+            <span>📍 Kita, Tokyo</span>
+            <span>🐙 github.com/mcyor</span>
+            <span>💼 linkedin.com/in/mcyor</span>
+          </div>
+        </div>
+        <div class="cv-body">
+          <!-- Profile -->
+          <div class="section">
+            <div class="section-title">PROFILE</div>
+            <p style="color: #a0b3d9; line-height: 1.6">
+              Innovative IT student and frontend developer with 3+ years of
+              experience building immersive web experiences. Passionate about 3D
+              graphics, interactive design, and pushing the boundaries of what's
+              possible on the web. Strong foundation in modern JavaScript
+              frameworks and a keen eye for detail.
+            </p>
+          </div>
+
+          <div class="grid-2">
+            <!-- Left Column -->
+            <div>
+              <!-- Skills -->
+              <div class="section">
+                <div class="section-title">TECHNICAL SKILLS</div>
+                <div class="skill-item">
+                  <div class="skill-name">TypeScript / JavaScript</div>
+                  <div class="skill-bar">
+                    <div class="skill-fill" style="width: 90%"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-name">React / Next.js</div>
+                  <div class="skill-bar">
+                    <div class="skill-fill" style="width: 88%"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-name">Three.js / WebGL</div>
+                  <div class="skill-bar">
+                    <div class="skill-fill" style="width: 80%"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-name">HTML5 / CSS3 / Tailwind</div>
+                  <div class="skill-bar">
+                    <div class="skill-fill" style="width: 95%"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-name">Python / Django</div>
+                  <div class="skill-bar">
+                    <div class="skill-fill" style="width: 75%"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <div class="skill-name">Node.js / Express</div>
+                  <div class="skill-bar">
+                    <div class="skill-fill" style="width: 82%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tools -->
+              <div class="section">
+                <div class="section-title">TOOLS & TECH</div>
+                <div>
+                  <span class="badge">Git/GitHub</span>
+                  <span class="badge">Figma</span>
+                  <span class="badge">VS Code</span>
+                  <span class="badge">Vite</span>
+                  <span class="badge">Webpack</span>
+                  <span class="badge">Docker</span>
+                  <span class="badge">MongoDB</span>
+                  <span class="badge">PostgreSQL</span>
+                </div>
+              </div>
+
+              <!-- Soft Skills -->
+              <div class="section">
+                <div class="section-title">SOFT SKILLS</div>
+                <div class="exp-desc">✦ Creative Problem Solving</div>
+                <div class="exp-desc">✦ Team Collaboration</div>
+                <div class="exp-desc">✦ Agile Methodologies</div>
+                <div class="exp-desc">✦ Attention to Detail</div>
+                <div class="exp-desc">✦ Fast Learner</div>
+              </div>
+
+              <!-- Languages -->
+              <div class="section">
+                <div class="section-title">LANGUAGES</div>
+                <div class="exp-desc">🇺🇸 English — Fluent (C2)</div>
+                <div class="exp-desc">🇵🇭 Filipino — Native</div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+              <!-- Experience -->
+              <div class="section">
+                <div class="section-title">EXPERIENCE</div>
+                <div class="exp-item">
+                  <div class="exp-title">Frontend Developer Intern</div>
+                  <div class="exp-date">2024 – Present · Neon Studios</div>
+                  <div class="exp-desc">
+                    Developing responsive web applications with React and
+                    Three.js. Implemented 3D product visualizers and interactive
+                    dashboards.
+                  </div>
+                </div>
+                <div class="exp-item">
+                  <div class="exp-title">Freelance Web Developer</div>
+                  <div class="exp-date">2023 – Present · Self-Employed</div>
+                  <div class="exp-desc">
+                    Built 15+ custom websites for clients including e-commerce,
+                    portfolios, and interactive experiences.
+                  </div>
+                </div>
+                <div class="exp-item">
+                  <div class="exp-title">Teaching Assistant - Web Dev</div>
+                  <div class="exp-date">2023 – 2024 · University</div>
+                  <div class="exp-desc">
+                    Assisted professor in teaching HTML/CSS/JS. Graded
+                    assignments and led lab sessions.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Education -->
+              <div class="section">
+                <div class="section-title">EDUCATION</div>
+                <div class="exp-item">
+                  <div class="exp-title">BS Information Technology</div>
+                  <div class="exp-date">
+                    2022 – 2026 · University of Technology
+                  </div>
+                  <div class="exp-desc">
+                    GPA: 1.25 (Dean's List, 3 consecutive years). Focus: Web
+                    Development, UI/UX, Database Systems.
+                  </div>
+                </div>
+                <div class="exp-item">
+                  <div class="exp-title">
+                    Full-Stack Web Development Bootcamp
+                  </div>
+                  <div class="exp-date">2023 · ByteAcademy</div>
+                  <div class="exp-desc">
+                    Intensive 12-week program covering MERN stack and
+                    deployment.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Certifications -->
+              <div class="section">
+                <div class="section-title">CERTIFICATIONS</div>
+                <div class="exp-desc">
+                  ✦ Meta Frontend Developer Professional Certificate
+                </div>
+                <div class="exp-desc">✦ Three.js Journey — Complete Course</div>
+                <div class="exp-desc">✦ Google UX Design Certificate</div>
+                <div class="exp-desc">
+                  ✦ AWS Cloud Practitioner (in progress)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Projects -->
+          <div class="section">
+            <div class="section-title">FEATURED PROJECTS</div>
+            <div class="grid-2">
+              <div class="project-item">
+                <div class="project-title">🎮 Neon Arcade Collection</div>
+                <div class="exp-desc">
+                  6 classic games rebuilt with 3D neon aesthetics, Three.js
+                  effects, and full mobile responsiveness. 10k+ plays.
+                </div>
+              </div>
+              <div class="project-item">
+                <div class="project-title">🌌 3D Portfolio</div>
+                <div class="exp-desc">
+                  Immersive portfolio with WebGL shaders, particle systems, and
+                  interactive 3D scenes.
+                </div>
+              </div>
+              <div class="project-item">
+                <div class="project-title">📊 CyberDash Analytics</div>
+                <div class="exp-desc">
+                  Real-time dashboard with WebSocket integration, custom data
+                  visualization, and dark mode.
+                </div>
+              </div>
+              <div class="project-item">
+                <div class="project-title">🤖 AI Image Generator</div>
+                <div class="exp-desc">
+                  Full-stack app using Stable Diffusion API, React frontend, and
+                  Express backend.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Achievements & Awards -->
+          <div class="section">
+            <div class="section-title">ACHIEVEMENTS</div>
+            <div class="exp-desc">
+              🏆 National Hackathon Champion — 1st place out of 120+ teams
+              (2024)
+            </div>
+            <div class="exp-desc">
+              ⭐ Google Developer Student Lead — University Chapter (2024-2025)
+            </div>
+            <div class="exp-desc">
+              🎨 Webby Awards Honoree — Experimental Web Design (2025)
+            </div>
+            <div class="exp-desc">
+              📝 Published Article on CSS Tricks — "Modern CSS Grid Techniques"
+            </div>
+          </div>
+
+          <hr />
+
+          <!-- Footer / Availability -->
+          <div style="text-align: center; margin-top: 1rem">
+            <p style="font-size: 0.7rem; color: #5e6f8d">
+              Available for full-time, freelance, and internship opportunities
+              starting June 2026.
+            </p>
+            <p style="font-size: 0.7rem; color: #5e6f8d">
+              References available upon request.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download Button -->
+      <div
+        style="
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          margin-top: 1.5rem;
+        "
+        class="no-print"
+      >
+        <button class="btn-download" onclick="downloadAsHTML()">
+          📄 Download as HTML
+        </button>
+        <button class="btn-download" onclick="window.print()">
+          🖨️ Print / Save as PDF
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function downloadAsHTML() {
+        const cvContent = document.getElementById("cvContent").cloneNode(true);
+        const style = document.querySelector("style").innerHTML;
+
+        const html = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>Mcyor Labial - Resume</title>
+      <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          background: white;
+          font-family: "DM Sans", sans-serif;
+          padding: 2rem;
+          color: #111;
+        }
+        .cv-card {
+          max-width: 1000px;
+          margin: 0 auto;
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+          overflow: hidden;
+          border: 1px solid #e0e0e0;
+        }
+        .cv-header {
+          background: linear-gradient(135deg, #f0f9ff, #e6e6ff);
+          padding: 2rem;
+          border-bottom: 1px solid #ddd;
+        }
+        .name {
+          font-family: "Syne", sans-serif;
+          font-size: 2.5rem;
+          font-weight: 800;
+          color: #1a1a2e;
+          margin-bottom: 0.5rem;
+        }
+        .title {
+          font-family: monospace;
+          font-size: 0.9rem;
+          color: #6c63ff;
+          margin-bottom: 1rem;
+        }
+        .contact-bar {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+          font-size: 0.75rem;
+          color: #555;
+        }
+        .cv-body { padding: 2rem; }
+        .section { margin-bottom: 1.5rem; }
+        .section-title {
+          font-family: "Syne", sans-serif;
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: #1a1a2e;
+          border-left: 3px solid #6c63ff;
+          padding-left: 1rem;
+          margin-bottom: 1rem;
+        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .skill-bar { background: #eee; height: 6px; border-radius: 10px; overflow: hidden; }
+        .skill-fill { background: linear-gradient(90deg, #6c63ff, #ff6584); height: 100%; border-radius: 10px; }
+        .skill-name { font-weight: 600; margin-bottom: 0.3rem; }
+        .badge { display: inline-block; background: #f0f0f0; border-radius: 20px; padding: 0.2rem 0.8rem; font-size: 0.7rem; margin: 0.2rem; }
+        .exp-title { font-weight: 700; color: #1a1a2e; }
+        .exp-date { font-size: 0.7rem; color: #888; }
+        .exp-desc { font-size: 0.8rem; color: #555; line-height: 1.4; }
+        .project-item { background: #f9f9f9; border-radius: 12px; padding: 0.8rem; margin-bottom: 0.8rem; }
+        .project-title { font-weight: 700; color: #6c63ff; }
+        hr { margin: 1rem 0; border-color: #eee; }
+        @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } .name { font-size: 1.8rem; } }
+      </style>
+    </head>
+    <body>
+      ${cvContent.outerHTML}
+      <div style="text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #999;">
+        Mcyor Labial · Resume · Generated ${new Date().toLocaleDateString()}
+      </div>
+    </body>
+    </html>`;
+
+        const blob = new Blob([html], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Mcyor_Labial_Resume.html";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    </script>
+  </body>
+</html>
