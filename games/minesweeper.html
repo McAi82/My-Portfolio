@@ -1,533 +1,636 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
-    <title>Mcyor · MINESWEEPER | 3D NEON</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        user-select: none;
-        -webkit-tap-highlight-color: transparent;
-      }
-      :root {
-        --neon-cyan: #0ff;
-        --neon-pink: #f0f;
-        --neon-purple: #b624ff;
-        --glow-cyan: rgba(0, 255, 255, 0.6);
-      }
-      body {
-        background: radial-gradient(circle at 20% 30%, #03050b, #000);
-        font-family: "DM Sans", sans-serif;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
-        position: relative;
-        overflow-x: hidden;
-      }
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background-image:
-          linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-        background-size: 50px 50px;
-        pointer-events: none;
-        animation: gridFloat 20s infinite alternate;
-      }
-      @keyframes gridFloat {
-        0% {
-          transform: translateZ(0) rotateX(0deg);
-          opacity: 0.3;
-        }
-        100% {
-          transform: translateZ(10px) rotateX(2deg);
-          opacity: 0.7;
-        }
-      }
-      .game-container {
-        position: relative;
-        z-index: 10;
-        width: 100%;
-        max-width: 750px;
-        perspective: 1200px;
-      }
-      .game-panel {
-        background: rgba(5, 8, 18, 0.85);
-        backdrop-filter: blur(12px);
-        border-radius: 2rem;
-        padding: 1.2rem;
-        border: 1px solid rgba(0, 255, 255, 0.4);
-        box-shadow:
-          0 25px 45px -12px black,
-          0 0 0 2px rgba(0, 255, 255, 0.2) inset,
-          0 0 18px var(--glow-cyan);
-      }
-      .game-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        flex-wrap: wrap;
-        margin-bottom: 1rem;
-        border-bottom: 2px solid var(--neon-cyan);
-        padding-bottom: 0.7rem;
-      }
-      .game-title {
-        font-family: "Syne", sans-serif;
-        font-weight: 800;
-        font-size: 1.5rem;
-        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      .stats-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 0.8rem;
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 60px;
-        padding: 0.5rem 1rem;
-        margin-bottom: 1rem;
-        border: 1px solid rgba(0, 255, 255, 0.3);
-      }
-      .stat {
-        display: flex;
-        gap: 0.5rem;
-        align-items: baseline;
-        font-family: "JetBrains Mono", monospace;
-      }
-      .stat-value {
-        font-family: "Syne", sans-serif;
-        font-size: 1.3rem;
-        font-weight: 800;
-        color: var(--neon-cyan);
-        text-shadow: 0 0 8px var(--neon-cyan);
-      }
-      button,
-      select {
-        background: rgba(0, 0, 0, 0.7);
-        border: 1px solid var(--neon-cyan);
-        padding: 0.4rem 0.8rem;
-        border-radius: 40px;
-        font-family: "DM Sans", sans-serif;
-        font-weight: 600;
-        font-size: 0.7rem;
-        color: var(--neon-cyan);
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-      button:hover,
-      select:hover {
-        background: var(--neon-cyan);
-        color: #000;
-        box-shadow: 0 0 15px var(--glow-cyan);
-      }
-      .canvas-area {
-        background: rgba(0, 0, 0, 0.55);
-        border-radius: 24px;
-        padding: 1rem;
-        border: 1px solid rgba(0, 255, 255, 0.4);
-        display: flex;
-        justify-content: center;
-      }
-      canvas {
-        display: block;
-        width: 100%;
-        height: auto;
-        border-radius: 16px;
-        box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
-        background: #000;
-        cursor: pointer;
-      }
-      .touch-controls {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 1rem;
-        flex-wrap: wrap;
-      }
-      .touch-btn {
-        background: rgba(0, 0, 0, 0.7);
-        border: 1px solid var(--neon-cyan);
-        padding: 0.6rem 1.2rem;
-        border-radius: 40px;
-        color: var(--neon-cyan);
-        font-weight: bold;
-        font-size: 0.8rem;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-      .touch-btn:active {
-        background: var(--neon-cyan);
-        color: #000;
-        transform: scale(0.95);
-      }
-      @media (max-width: 600px) {
-        .game-title {
-          font-size: 1rem;
-        }
-        .stat-value {
-          font-size: 1rem;
-        }
-        .touch-btn {
-          padding: 0.4rem 0.8rem;
-          font-size: 0.7rem;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="game-container">
-      <div class="game-panel">
-        <div class="game-header">
-          <span class="game-title">💣 MINESWEEPER · 3D NEON</span
-          ><span style="color: #0ff">⚡</span>
-        </div>
-        <div class="stats-row">
-          <div class="stat">
-            <span class="stat-value" id="minesLeft">0</span><span>MINES</span>
-          </div>
-          <div class="stat">
-            <span class="stat-value" id="gameStatus">READY</span
-            ><span>STATUS</span>
-          </div>
-          <select id="difficulty">
-            <option value="easy">EASY 8x8</option>
-            <option value="normal" selected>NORMAL 16x16</option>
-            <option value="hard">HARD 16x30</option>
-          </select>
-          <button id="resetBtn">⟳ RESTART</button>
-        </div>
-        <div class="canvas-area">
-          <canvas id="boardCanvas" width="400" height="400"></canvas>
-        </div>
-        <div class="touch-controls">
-          <div class="touch-btn" id="touchFlag">🚩 FLAG</div>
-          <div class="touch-btn" id="touchReveal">💣 REVEAL</div>
-        </div>
-        <div
-          style="
-            text-align: center;
-            margin-top: 0.8rem;
-            font-size: 0.6rem;
-            color: #5e6f8d;
-          "
-        >
-          🖱️ Click: Reveal | Right-click/Long press: Flag | Mobile: Use buttons
-        </div>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Mcyor · SPACE SHOOTER | EASY MODE</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: radial-gradient(circle at 20% 30%, #03050b, #000);
+      font-family: "DM Sans", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      animation: gridFloat 20s infinite alternate;
+    }
+    @keyframes gridFloat {
+      0% { transform: translateZ(0) rotateX(0deg); opacity: 0.3; }
+      100% { transform: translateZ(10px) rotateX(2deg); opacity: 0.7; }
+    }
+    .game-container { position: relative; z-index: 10; width: 100%; max-width: 800px; perspective: 1200px; }
+    .game-panel {
+      background: rgba(5, 8, 18, 0.85);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      padding: 1.2rem;
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      box-shadow: 0 25px 45px -12px black, 0 0 0 2px rgba(0,255,255,0.2) inset, 0 0 18px rgba(0,255,255,0.6);
+    }
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #0ff;
+      padding-bottom: 0.7rem;
+    }
+    .game-title {
+      font-family: "Syne", sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, #0ff, #f0f);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      background: rgba(0,0,0,0.5);
+      border-radius: 60px;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+    }
+    .stat { display: flex; gap: 0.5rem; align-items: baseline; font-family: "JetBrains Mono", monospace; }
+    .stat-value { font-family: "Syne", sans-serif; font-size: 1.3rem; font-weight: 800; color: #0ff; text-shadow: 0 0 8px #0ff; }
+    button {
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #0ff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 40px;
+      font-family: "DM Sans", sans-serif;
+      font-weight: 600;
+      font-size: 0.7rem;
+      color: #0ff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover, button:active { background: #0ff; color: #000; box-shadow: 0 0 15px rgba(0,255,255,0.6); }
+    .canvas-area { background: rgba(0,0,0,0.55); border-radius: 24px; padding: 0.5rem; border: 1px solid rgba(0,255,255,0.4); display: flex; justify-content: center; }
+    canvas { display: block; width: 100%; height: auto; border-radius: 16px; box-shadow: 0 0 0 2px rgba(0,255,255,0.3); background: #000; cursor: pointer; }
+    .touch-controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .touch-btn {
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #0ff;
+      padding: 0.8rem 1.2rem;
+      border-radius: 40px;
+      color: #0ff;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.05s linear;
+      min-width: 80px;
+      text-align: center;
+    }
+    .touch-btn:active { background: #0ff; color: #000; transform: scale(0.95); }
+    .difficulty-select {
+      background: rgba(0,0,0,0.7);
+      border: 1px solid #0ff;
+      border-radius: 40px;
+      color: #0ff;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+    @media (max-width: 600px) {
+      .game-title { font-size: 1rem; }
+      .touch-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; min-width: 60px; }
+    }
+  </style>
+</head>
+<body>
+<div class="game-container">
+  <div class="game-panel">
+    <div class="game-header">
+      <span class="game-title">🚀 SPACE SHOOTER · EASY MODE</span>
+      <span style="color:#0ff;">⚡ ARCADE</span>
     </div>
-    <script>
-      const canvas = document.getElementById("boardCanvas"),
-        ctx = canvas.getContext("2d");
-      let rows = 16,
-        cols = 16,
-        totalMines = 40,
-        board = [],
-        flagsPlaced = 0,
-        gameActive = true,
-        firstClick = true,
-        winFlag = false;
-      let cellW = 0,
-        cellH = 0;
-      const minesSpan = document.getElementById("minesLeft"),
-        statusSpan = document.getElementById("gameStatus"),
-        resetBtn = document.getElementById("resetBtn"),
-        diffSelect = document.getElementById("difficulty");
+    <div class="stats-row">
+      <div class="stat"><span class="stat-value" id="shooterScore">0</span><span>SCORE</span></div>
+      <div class="stat"><span class="stat-value" id="shooterLives">5</span><span>LIVES</span></div>
+      <div class="stat"><span class="stat-value" id="shooterWave">1</span><span>WAVE</span></div>
+      <select id="difficultySelect" class="difficulty-select">
+        <option value="easy" selected>🟢 EASY</option>
+        <option value="normal">🔵 NORMAL</option>
+        <option value="hard">🔴 HARD</option>
+      </select>
+      <button id="shooterStart">START</button>
+      <button id="shooterReset">RESTART</button>
+    </div>
+    <div class="canvas-area">
+      <canvas id="shooterCanvas" width="700" height="500"></canvas>
+    </div>
+    <div class="touch-controls">
+      <div class="touch-btn" id="moveLeftBtn">◀ LEFT</div>
+      <div class="touch-btn" id="moveRightBtn">RIGHT ▶</div>
+      <div class="touch-btn" id="fireBtn">🔫 FIRE</div>
+    </div>
+    <div style="text-align:center; margin-top:0.8rem; font-size:0.6rem; color:#5e6f8d;">
+      ◉ Arrow Keys / A D to move | SPACE to fire | Hold for continuous shooting
+    </div>
+  </div>
+</div>
 
-      function setDifficulty(mode) {
-        if (mode === "easy") {
-          rows = 8;
-          cols = 8;
-          totalMines = 10;
-        } else if (mode === "normal") {
-          rows = 16;
-          cols = 16;
-          totalMines = 40;
-        } else {
-          rows = 16;
-          cols = 30;
-          totalMines = 99;
+<script>
+  (function(){
+    // CANVAS
+    const canvas = document.getElementById('shooterCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // GAME DIMENSIONS
+    let W = 700;
+    let H = 500;
+    
+    // GAME STATE
+    let gameRunning = false;
+    let score = 0;
+    let lives = 5;  // EASIER: Start with 5 lives
+    let wave = 1;
+    let difficulty = 'easy';
+    
+    // PLAYER - BIGGER SHIP for easier hitting
+    let player = {
+      x: W/2 - 25,
+      y: H - 70,
+      width: 50,
+      height: 40,
+      speed: 7  // FASTER movement
+    };
+    
+    // BULLETS - FASTER fire rate
+    let bullets = [];
+    let bulletCooldown = 0;
+    let bulletCooldownMax = 8;  // FASTER shooting
+    let isFiring = false;
+    
+    // ENEMIES - SLOWER and fewer
+    let enemies = [];
+    let enemySpawnCounter = 0;
+    let enemySpawnDelay = 60;  // SLOWER spawning
+    
+    // ENEMY BULLETS - SLOWER and less frequent
+    let enemyBullets = [];
+    let enemyShootDelay = 0;
+    
+    // PARTICLES
+    let particles = [];
+    
+    // CONTROLS
+    let leftPressed = false;
+    let rightPressed = false;
+    let spacePressed = false;
+    let touchLeft = false;
+    let touchRight = false;
+    
+    // DIFFICULTY SETTINGS
+    function getDifficultySettings() {
+      switch(difficulty) {
+        case 'easy':
+          return { enemySpeed: 0.8, enemyShootRate: 0.008, bulletSpeed: -5, enemySpawnMax: 8, playerSpeed: 7, bulletCooldownMax: 7 };
+        case 'normal':
+          return { enemySpeed: 1.2, enemyShootRate: 0.015, bulletSpeed: -6, enemySpawnMax: 10, playerSpeed: 6, bulletCooldownMax: 9 };
+        case 'hard':
+          return { enemySpeed: 1.8, enemyShootRate: 0.025, bulletSpeed: -7, enemySpawnMax: 12, playerSpeed: 5, bulletCooldownMax: 12 };
+        default:
+          return { enemySpeed: 0.8, enemyShootRate: 0.008, bulletSpeed: -5, enemySpawnMax: 8, playerSpeed: 7, bulletCooldownMax: 7 };
+      }
+    }
+    
+    let settings = getDifficultySettings();
+    
+    // ----- RESIZE CANVAS -----
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      const maxWidth = Math.min(container.clientWidth - 20, window.innerWidth - 80, 700);
+      const aspect = 700 / 500;
+      const newWidth = maxWidth;
+      const newHeight = newWidth / aspect;
+      
+      canvas.style.width = `${newWidth}px`;
+      canvas.style.height = `${newHeight}px`;
+      canvas.width = 700;
+      canvas.height = 500;
+      
+      W = 700;
+      H = 500;
+      
+      player.y = H - 70;
+      if (player.x > W - player.width) player.x = W - player.width;
+      if (player.x < 0) player.x = 0;
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    
+    // ----- SPAWN ENEMY (EASIER: smaller enemies)-----
+    function spawnEnemy() {
+      const enemyWidth = 32;
+      const enemyHeight = 28;
+      enemies.push({
+        x: Math.random() * (W - enemyWidth),
+        y: 10,
+        width: enemyWidth,
+        height: enemyHeight,
+        hp: 1,
+        speed: settings.enemySpeed + (wave * 0.05)
+      });
+    }
+    
+    // ----- UPDATE UI -----
+    function updateUI() {
+      document.getElementById('shooterScore').innerText = score;
+      document.getElementById('shooterLives').innerText = lives;
+      document.getElementById('shooterWave').innerText = wave;
+    }
+    
+    // ----- PLAYER SHOOT -----
+    function shoot() {
+      if (bulletCooldown <= 0) {
+        bullets.push({
+          x: player.x + player.width/2 - 3,
+          y: player.y - 10,
+          width: 6,
+          height: 12,
+          speed: -8
+        });
+        bulletCooldown = settings.bulletCooldownMax;
+      }
+    }
+    
+    // ----- ENEMY SHOOT (LESS FREQUENT)-----
+    function enemyShoot(enemy) {
+      if (Math.random() < settings.enemyShootRate) {
+        enemyBullets.push({
+          x: enemy.x + enemy.width/2 - 3,
+          y: enemy.y + enemy.height,
+          width: 5,
+          height: 8,
+          speed: 3.5
+        });
+      }
+    }
+    
+    // ----- ADD EXPLOSION EFFECT -----
+    function addExplosion(x, y, color) {
+      for (let i = 0; i < 12; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4 - 2,
+          life: 25,
+          color: color
+        });
+      }
+    }
+    
+    // ----- UPDATE GAME -----
+    function updateGame() {
+      if (!gameRunning) return;
+      
+      // Player movement
+      if (leftPressed || touchLeft) {
+        player.x -= settings.playerSpeed;
+        if (player.x < 0) player.x = 0;
+      }
+      if (rightPressed || touchRight) {
+        player.x += settings.playerSpeed;
+        if (player.x > W - player.width) player.x = W - player.width;
+      }
+      
+      // Continuous shooting
+      if (spacePressed || isFiring) {
+        shoot();
+      }
+      
+      // Bullet cooldown
+      if (bulletCooldown > 0) bulletCooldown--;
+      
+      // Update player bullets (upward)
+      for (let i = 0; i < bullets.length; i++) {
+        bullets[i].y += bullets[i].speed;
+        if (bullets[i].y + bullets[i].height < 0 || bullets[i].y > H) {
+          bullets.splice(i, 1);
+          i--;
         }
       }
-      function resizeCanvas() {
-        const container = canvas.parentElement,
-          maxSize = Math.min(
-            container.clientWidth - 20,
-            window.innerWidth - 60,
-            550,
-          );
-        canvas.style.width = `${maxSize}px`;
-        canvas.style.height = `${maxSize}px`;
-        canvas.width = maxSize * devicePixelRatio;
-        canvas.height = maxSize * devicePixelRatio;
-        ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-        cellW = maxSize / cols;
-        cellH = maxSize / rows;
-        drawBoard();
-      }
-      function initBoard() {
-        board = [];
-        for (let r = 0; r < rows; r++) {
-          board[r] = [];
-          for (let c = 0; c < cols; c++)
-            board[r][c] = {
-              mine: false,
-              revealed: false,
-              flagged: false,
-              adjacent: 0,
-            };
-        }
-        flagsPlaced = 0;
-        gameActive = true;
-        firstClick = true;
-        winFlag = false;
-        statusSpan.innerText = "READY";
-        updateMines();
-      }
-      function placeMines(exR, exC) {
-        let placed = 0;
-        while (placed < totalMines) {
-          let r = Math.floor(Math.random() * rows),
-            c = Math.floor(Math.random() * cols);
-          if (board[r][c].mine) continue;
-          if (Math.abs(r - exR) <= 1 && Math.abs(c - exC) <= 1) continue;
-          board[r][c].mine = true;
-          placed++;
-        }
-        for (let r = 0; r < rows; r++)
-          for (let c = 0; c < cols; c++) {
-            if (board[r][c].mine) {
-              board[r][c].adjacent = -1;
-              continue;
+      
+      // Update enemies and collisions
+      for (let i = 0; i < enemies.length; i++) {
+        const enemy = enemies[i];
+        enemy.y += enemy.speed;
+        
+        // Enemy shooting (less frequent)
+        enemyShoot(enemy);
+        
+        // Bullet collision
+        for (let j = 0; j < bullets.length; j++) {
+          const bullet = bullets[j];
+          if (bullet.x < enemy.x + enemy.width &&
+              bullet.x + bullet.width > enemy.x &&
+              bullet.y < enemy.y + enemy.height &&
+              bullet.y + bullet.height > enemy.y) {
+            bullets.splice(j, 1);
+            enemy.hp--;
+            
+            if (enemy.hp <= 0) {
+              addExplosion(enemy.x + enemy.width/2, enemy.y + enemy.height/2, '#ff6600');
+              enemies.splice(i, 1);
+              score += 10;
+              updateUI();
+              i--;
             }
-            let cnt = 0;
-            for (let dr = -1; dr <= 1; dr++)
-              for (let dc = -1; dc <= 1; dc++) {
-                let nr = r + dr,
-                  nc = c + dc;
-                if (
-                  nr >= 0 &&
-                  nr < rows &&
-                  nc >= 0 &&
-                  nc < cols &&
-                  board[nr][nc].mine
-                )
-                  cnt++;
-              }
-            board[r][c].adjacent = cnt;
-          }
-      }
-      function revealCell(r, c) {
-        if (!gameActive) return;
-        if (r < 0 || r >= rows || c < 0 || c >= cols) return;
-        let cell = board[r][c];
-        if (cell.revealed || cell.flagged) return;
-        cell.revealed = true;
-        if (cell.mine) {
-          gameActive = false;
-          statusSpan.innerText = "💥 BOOM";
-          revealAllMines();
-          drawBoard();
-          setTimeout(() => alert("💀 Game Over!"), 30);
-          return;
-        }
-        if (cell.adjacent === 0) {
-          for (let dr = -1; dr <= 1; dr++)
-            for (let dc = -1; dc <= 1; dc++)
-              if (dr !== 0 || dc !== 0) revealCell(r + dr, c + dc);
-        }
-        checkWin();
-      }
-      function revealAllMines() {
-        for (let r = 0; r < rows; r++)
-          for (let c = 0; c < cols; c++)
-            if (board[r][c].mine) board[r][c].revealed = true;
-      }
-      function toggleFlag(r, c) {
-        if (!gameActive) return;
-        let cell = board[r][c];
-        if (cell.revealed) return;
-        if (!cell.flagged) {
-          if (flagsPlaced >= totalMines) return;
-          cell.flagged = true;
-          flagsPlaced++;
-        } else {
-          cell.flagged = false;
-          flagsPlaced--;
-        }
-        updateMines();
-        drawBoard();
-        checkWin();
-      }
-      function checkWin() {
-        let safeRevealed = 0;
-        let totalSafe = rows * cols - totalMines;
-        for (let r = 0; r < rows; r++)
-          for (let c = 0; c < cols; c++)
-            if (!board[r][c].mine && board[r][c].revealed) safeRevealed++;
-        if (safeRevealed === totalSafe && !winFlag) {
-          gameActive = false;
-          winFlag = true;
-          statusSpan.innerText = "✨ VICTORY!";
-          drawBoard();
-          setTimeout(() => alert("🎉 You Won!"), 30);
-        }
-      }
-      function updateMines() {
-        minesSpan.innerText = Math.max(0, totalMines - flagsPlaced);
-      }
-      function drawBoard() {
-        ctx.fillStyle = "#03050b";
-        ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            let x = c * cellW,
-              y = r * cellH,
-              cell = board[r][c];
-            if (cell.revealed) {
-              ctx.fillStyle = "#0a0f14";
-              ctx.fillRect(x, y, cellW, cellH);
-              if (cell.mine) {
-                ctx.fillStyle = "#ff3b5c";
-                ctx.beginPath();
-                ctx.arc(
-                  x + cellW / 2,
-                  y + cellH / 2,
-                  cellW * 0.28,
-                  0,
-                  Math.PI * 2,
-                );
-                ctx.fill();
-              } else if (cell.adjacent > 0) {
-                let colors = [
-                  "#0ff",
-                  "#0f0",
-                  "#ff0",
-                  "#f0f",
-                  "#ff6600",
-                  "#ff0066",
-                ];
-                ctx.fillStyle = colors[(cell.adjacent - 1) % colors.length];
-                ctx.font = `bold ${Math.max(12, cellW * 0.5)}px "JetBrains Mono", monospace`;
-                ctx.fillText(cell.adjacent, x + cellW * 0.35, y + cellH * 0.7);
-              }
-            } else {
-              ctx.fillStyle = "#11161f";
-              ctx.fillRect(x, y, cellW, cellH);
-              ctx.strokeStyle = "rgba(0,255,255,0.3)";
-              ctx.strokeRect(x + 0.5, y + 0.5, cellW - 1, cellH - 1);
-              if (cell.flagged) {
-                ctx.fillStyle = "#0ff";
-                ctx.beginPath();
-                ctx.moveTo(x + cellW * 0.45, y + cellH * 0.7);
-                ctx.lineTo(x + cellW * 0.55, y + cellH * 0.7);
-                ctx.lineTo(x + cellW * 0.5, y + cellH * 0.4);
-                ctx.fill();
-                ctx.fillRect(
-                  x + cellW * 0.48,
-                  y + cellH * 0.28,
-                  cellW * 0.04,
-                  cellH * 0.42,
-                );
-              }
-            }
+            break;
           }
         }
+        
+        // Enemy reached bottom - lose life but easier penalty
+        if (enemies[i] && enemies[i].y + enemies[i].height > H - 60) {
+          addExplosion(enemies[i].x + enemies[i].width/2, enemies[i].y + enemies[i].height/2, '#ff0000');
+          enemies.splice(i, 1);
+          lives--;
+          updateUI();
+          if (lives <= 0) {
+            gameRunning = false;
+          }
+          i--;
+        }
       }
-      function getCellFromXY(clientX, clientY) {
-        let rect = canvas.getBoundingClientRect(),
-          scaleX = canvas.clientWidth / rect.width,
-          scaleY = canvas.clientHeight / rect.height,
-          mouseX = (clientX - rect.left) * scaleX,
-          mouseY = (clientY - rect.top) * scaleY,
-          c = Math.floor(mouseX / cellW),
-          r = Math.floor(mouseY / cellH);
-        return { r, c };
+      
+      // Update enemy bullets and collision
+      for (let i = 0; i < enemyBullets.length; i++) {
+        enemyBullets[i].y += enemyBullets[i].speed;
+        if (enemyBullets[i].y > H || enemyBullets[i].y + enemyBullets[i].height < 0) {
+          enemyBullets.splice(i, 1);
+          i--;
+          continue;
+        }
+        
+        const eb = enemyBullets[i];
+        if (eb.x < player.x + player.width &&
+            eb.x + eb.width > player.x &&
+            eb.y < player.y + player.height &&
+            eb.y + eb.height > player.y) {
+          enemyBullets.splice(i, 1);
+          lives--;
+          updateUI();
+          addExplosion(player.x + player.width/2, player.y + player.height/2, '#ff8800');
+          
+          if (lives <= 0) {
+            gameRunning = false;
+          }
+          i--;
+        }
       }
-      let longPressTimer = null;
-      canvas.addEventListener("contextmenu", (e) => {
+      
+      // Spawn enemies (slower)
+      enemySpawnCounter++;
+      let spawnRate = Math.max(40, 70 - wave * 2);
+      if (enemySpawnCounter > spawnRate && enemies.length < settings.enemySpawnMax + Math.floor(wave/3)) {
+        enemySpawnCounter = 0;
+        spawnEnemy();
+      }
+      
+      // Wave progression (when all enemies destroyed)
+      if (enemies.length === 0 && gameRunning && score > 0) {
+        wave++;
+        updateUI();
+        // Bonus score for clearing wave
+        score += 50 * wave;
+        updateUI();
+        // Spawn new wave gradually
+        for (let i = 0; i < Math.min(3 + Math.floor(wave/2), 8); i++) {
+          setTimeout(() => { if (gameRunning) spawnEnemy(); }, i * 400);
+        }
+        addExplosion(W/2, H/2, '#00ffff');
+      }
+      
+      // Update particles
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].x += particles[i].vx;
+        particles[i].y += particles[i].vy;
+        particles[i].life--;
+        if (particles[i].life <= 0) {
+          particles.splice(i, 1);
+          i--;
+        }
+      }
+    }
+    
+    // ----- DRAW EVERYTHING -----
+    function draw() {
+      // Background
+      ctx.fillStyle = '#03050b';
+      ctx.fillRect(0, 0, W, H);
+      
+      // Stars
+      for (let i = 0; i < 80; i++) {
+        ctx.fillStyle = `rgba(255,255,255,${0.2 + Math.sin(Date.now() * 0.002 + i) * 0.15})`;
+        ctx.fillRect((i * 131) % W, (i * 253) % H, 1, 1);
+      }
+      
+      // Player ship (neon triangle)
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#0ff';
+      ctx.fillStyle = '#0ff';
+      ctx.beginPath();
+      ctx.moveTo(player.x + player.width/2, player.y);
+      ctx.lineTo(player.x + player.width - 6, player.y + player.height);
+      ctx.lineTo(player.x + player.width/2, player.y + player.height - 8);
+      ctx.lineTo(player.x + 6, player.y + player.height);
+      ctx.fill();
+      
+      // Player bullets
+      ctx.fillStyle = '#ffff00';
+      for (let b of bullets) {
+        ctx.fillRect(b.x, b.y, b.width, b.height);
+      }
+      
+      // Enemies
+      for (let e of enemies) {
+        // Gradient enemy
+        const grad = ctx.createLinearGradient(e.x, e.y, e.x + e.width, e.y + e.height);
+        grad.addColorStop(0, '#ff44aa');
+        grad.addColorStop(1, '#ff0066');
+        ctx.fillStyle = grad;
+        ctx.fillRect(e.x, e.y, e.width, e.height);
+        // Eyes
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(e.x + 6, e.y + 8, 6, 6);
+        ctx.fillRect(e.x + e.width - 12, e.y + 8, 6, 6);
+      }
+      
+      // Enemy bullets
+      ctx.fillStyle = '#ff8844';
+      for (let eb of enemyBullets) {
+        ctx.fillRect(eb.x, eb.y, eb.width, eb.height);
+      }
+      
+      // Particles
+      for (let p of particles) {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 3, 3);
+      }
+      
+      ctx.shadowBlur = 0;
+      
+      // Game messages
+      if (!gameRunning && lives <= 0) {
+        ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        ctx.fillRect(0, H/2-50, W, 100);
+        ctx.fillStyle = '#0ff';
+        ctx.font = 'bold 20px monospace';
+        ctx.fillText('GAME OVER', W/2-60, H/2);
+        ctx.font = '12px monospace';
+        ctx.fillText('PRESS START', W/2-45, H/2+35);
+      } else if (!gameRunning && lives > 0) {
+        ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        ctx.fillRect(0, H/2-50, W, 100);
+        ctx.fillStyle = '#0ff';
+        ctx.font = 'bold 18px monospace';
+        ctx.fillText('SPACE SHOOTER', W/2-85, H/2);
+        ctx.font = '12px monospace';
+        ctx.fillText('PRESS START', W/2-45, H/2+30);
+      }
+      
+      // Health indicator
+      ctx.fillStyle = '#ff3366';
+      for (let i = 0; i < lives; i++) {
+        ctx.fillRect(10 + i * 15, 15, 10, 10);
+      }
+    }
+    
+    // ----- KEYBOARD CONTROLS -----
+    function handleKeyDown(e) {
+      const key = e.key.toLowerCase();
+      
+      if (key === 'arrowleft' || key === 'arrowright' || key === 'a' || key === 'd' || key === ' ') {
         e.preventDefault();
-        let { r, c } = getCellFromXY(e.clientX, e.clientY);
-        if (r >= 0 && r < rows && c >= 0 && c < cols) toggleFlag(r, c);
-        drawBoard();
-      });
-      canvas.addEventListener("pointerdown", (e) => {
-        let { r, c } = getCellFromXY(e.clientX, e.clientY);
-        if (r < 0 || r >= rows || c < 0 || c >= cols) return;
-        longPressTimer = setTimeout(() => {
-          toggleFlag(r, c);
-          drawBoard();
-          longPressTimer = null;
-        }, 500);
-      });
-      canvas.addEventListener("pointerup", (e) => {
-        if (longPressTimer) {
-          clearTimeout(longPressTimer);
-          longPressTimer = null;
-          let { r, c } = getCellFromXY(e.clientX, e.clientY);
-          if (
-            r >= 0 &&
-            r < rows &&
-            c >= 0 &&
-            c < cols &&
-            !board[r][c].flagged
-          ) {
-            if (firstClick) {
-              placeMines(r, c);
-              firstClick = false;
-            }
-            revealCell(r, c);
-            drawBoard();
-          }
-        }
-      });
-      canvas.addEventListener("pointercancel", () => {
-        if (longPressTimer) clearTimeout(longPressTimer);
-      });
-      document.getElementById("touchFlag").onclick = () => {
-        if (!gameActive) return;
-        alert("Tap a cell to place/remove flag");
-      };
-      document.getElementById("touchReveal").onclick = () => {
-        if (!gameActive) return;
-        alert("Tap a cell to reveal");
-      };
-      resetBtn.onclick = () => {
-        setDifficulty(diffSelect.value);
-        initBoard();
-        resizeCanvas();
-        drawBoard();
-      };
-      diffSelect.onchange = () => {
-        setDifficulty(diffSelect.value);
-        initBoard();
-        resizeCanvas();
-        drawBoard();
-      };
-      window.addEventListener("resize", () => {
-        resizeCanvas();
-        drawBoard();
-      });
-      setDifficulty("normal");
-      initBoard();
-      resizeCanvas();
-      drawBoard();
-    </script>
-  </body>
+      }
+      
+      if (key === 'arrowleft' || key === 'a') {
+        leftPressed = true;
+        if (!gameRunning) startGame();
+      }
+      if (key === 'arrowright' || key === 'd') {
+        rightPressed = true;
+        if (!gameRunning) startGame();
+      }
+      if (key === ' ') {
+        spacePressed = true;
+        if (gameRunning) shoot();
+        if (!gameRunning) startGame();
+      }
+    }
+    
+    function handleKeyUp(e) {
+      const key = e.key.toLowerCase();
+      if (key === 'arrowleft' || key === 'a') leftPressed = false;
+      if (key === 'arrowright' || key === 'd') rightPressed = false;
+      if (key === ' ') spacePressed = false;
+    }
+    
+    // ----- TOUCH CONTROLS -----
+    function initTouchControls() {
+      const leftBtn = document.getElementById('moveLeftBtn');
+      const rightBtn = document.getElementById('moveRightBtn');
+      const fireBtn = document.getElementById('fireBtn');
+      
+      leftBtn.addEventListener('touchstart', (e) => { e.preventDefault(); touchLeft = true; if (!gameRunning) startGame(); });
+      leftBtn.addEventListener('touchend', (e) => { e.preventDefault(); touchLeft = false; });
+      leftBtn.addEventListener('mousedown', (e) => { e.preventDefault(); touchLeft = true; if (!gameRunning) startGame(); });
+      leftBtn.addEventListener('mouseup', (e) => { e.preventDefault(); touchLeft = false; });
+      
+      rightBtn.addEventListener('touchstart', (e) => { e.preventDefault(); touchRight = true; if (!gameRunning) startGame(); });
+      rightBtn.addEventListener('touchend', (e) => { e.preventDefault(); touchRight = false; });
+      rightBtn.addEventListener('mousedown', (e) => { e.preventDefault(); touchRight = true; if (!gameRunning) startGame(); });
+      rightBtn.addEventListener('mouseup', (e) => { e.preventDefault(); touchRight = false; });
+      
+      fireBtn.addEventListener('touchstart', (e) => { e.preventDefault(); if (gameRunning) { isFiring = true; shoot(); } else startGame(); });
+      fireBtn.addEventListener('touchend', (e) => { e.preventDefault(); isFiring = false; });
+      fireBtn.addEventListener('mousedown', (e) => { e.preventDefault(); if (gameRunning) { isFiring = true; shoot(); } else startGame(); });
+      fireBtn.addEventListener('mouseup', (e) => { e.preventDefault(); isFiring = false; });
+    }
+    
+    // ----- GAME START / RESET -----
+    function startGame() {
+      gameRunning = true;
+      score = 0;
+      lives = 5;
+      wave = 1;
+      bullets = [];
+      enemies = [];
+      enemyBullets = [];
+      particles = [];
+      player.x = W/2 - player.width/2;
+      bulletCooldown = 0;
+      enemySpawnCounter = 0;
+      
+      // Spawn initial enemies (fewer)
+      for (let i = 0; i < 2; i++) {
+        setTimeout(() => { if (gameRunning) spawnEnemy(); }, i * 500);
+      }
+      
+      updateUI();
+    }
+    
+    function resetGame() {
+      startGame();
+    }
+    
+    // Difficulty change
+    document.getElementById('difficultySelect').addEventListener('change', (e) => {
+      difficulty = e.target.value;
+      settings = getDifficultySettings();
+      if (gameRunning) {
+        resetGame();
+      }
+    });
+    
+    // ----- GAME LOOP -----
+    function gameLoop() {
+      updateGame();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+    
+    // ----- EVENT LISTENERS -----
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    
+    document.getElementById('shooterStart').addEventListener('click', startGame);
+    document.getElementById('shooterReset').addEventListener('click', resetGame);
+    
+    initTouchControls();
+    
+    // Start game loop
+    gameLoop();
+    draw();
+  })();
+</script>
+</body>
 </html>
