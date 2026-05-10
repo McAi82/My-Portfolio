@@ -26,7 +26,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1rem;
+        padding: 0.8rem;
         position: relative;
       }
       body::before {
@@ -36,7 +36,7 @@
         background-image:
           linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
           linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-        background-size: 50px 50px;
+        background-size: 40px 40px;
         pointer-events: none;
         animation: gridFloat 20s infinite alternate;
       }
@@ -54,14 +54,15 @@
         position: relative;
         z-index: 10;
         width: 100%;
-        max-width: 750px;
+        max-width: 600px;
         perspective: 1200px;
+        margin: 0 auto;
       }
       .game-panel {
         background: rgba(5, 8, 18, 0.85);
         backdrop-filter: blur(12px);
-        border-radius: 2rem;
-        padding: 1.2rem;
+        border-radius: 1.5rem;
+        padding: 0.8rem;
         border: 1px solid rgba(0, 255, 255, 0.4);
         box-shadow:
           0 25px 45px -12px black,
@@ -73,14 +74,14 @@
         justify-content: space-between;
         align-items: baseline;
         flex-wrap: wrap;
-        margin-bottom: 1rem;
+        margin-bottom: 0.7rem;
         border-bottom: 2px solid #0ff;
-        padding-bottom: 0.7rem;
+        padding-bottom: 0.5rem;
       }
       .game-title {
         font-family: "Syne", sans-serif;
         font-weight: 800;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         background: linear-gradient(135deg, #0ff, #f0f);
         -webkit-background-clip: text;
         background-clip: text;
@@ -91,34 +92,34 @@
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 0.8rem;
+        gap: 0.5rem;
         background: rgba(0, 0, 0, 0.5);
-        border-radius: 60px;
-        padding: 0.5rem 1rem;
-        margin-bottom: 1rem;
+        padding: 0.4rem 0.8rem;
+        margin-bottom: 0.7rem;
         border: 1px solid rgba(0, 255, 255, 0.3);
       }
       .stat {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.3rem;
         align-items: baseline;
         font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
       }
       .stat-value {
         font-family: "Syne", sans-serif;
-        font-size: 1.3rem;
+        font-size: 1rem;
         font-weight: 800;
         color: #0ff;
-        text-shadow: 0 0 8px #0ff;
+        text-shadow: 0 0 5px #0ff;
       }
       button {
         background: rgba(0, 0, 0, 0.7);
         border: 1px solid #0ff;
-        padding: 0.4rem 0.8rem;
+        padding: 0.3rem 0.6rem;
         border-radius: 40px;
         font-family: "DM Sans", sans-serif;
         font-weight: 600;
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         color: #0ff;
         cursor: pointer;
         transition: all 0.2s;
@@ -127,12 +128,12 @@
       button:active {
         background: #0ff;
         color: #000;
-        box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
       }
       .canvas-area {
         background: rgba(0, 0, 0, 0.55);
-        border-radius: 24px;
-        padding: 0.5rem;
+        border-radius: 20px;
+        padding: 0.4rem;
         border: 1px solid rgba(0, 255, 255, 0.4);
         display: flex;
         justify-content: center;
@@ -141,7 +142,7 @@
         display: block;
         width: 100%;
         height: auto;
-        border-radius: 16px;
+        border-radius: 12px;
         box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
         background: #000;
         cursor: pointer;
@@ -149,17 +150,17 @@
       .dpad {
         display: flex;
         justify-content: center;
-        gap: 0.8rem;
-        margin-top: 1rem;
+        gap: 0.5rem;
+        margin-top: 0.8rem;
         flex-wrap: wrap;
       }
       .dpad button {
-        width: 65px;
-        height: 65px;
-        font-size: 1.8rem;
+        width: 55px;
+        height: 55px;
+        font-size: 1.3rem;
+        border-radius: 16px;
         background: rgba(0, 0, 0, 0.7);
         border: 1px solid #0ff;
-        border-radius: 20px;
         color: #0ff;
         cursor: pointer;
         transition: 0.05s linear;
@@ -169,17 +170,31 @@
         color: #000;
         transform: scale(0.92);
       }
-      @media (max-width: 600px) {
+
+      @media (max-width: 550px) {
+        body {
+          padding: 0.5rem;
+        }
+        .game-panel {
+          padding: 0.6rem;
+        }
         .game-title {
           font-size: 1rem;
         }
         .stat-value {
-          font-size: 1rem;
+          font-size: 0.85rem;
         }
         .dpad button {
-          width: 55px;
-          height: 55px;
-          font-size: 1.4rem;
+          width: 48px;
+          height: 48px;
+          font-size: 1.1rem;
+        }
+      }
+      @media (max-width: 450px) {
+        .dpad button {
+          width: 42px;
+          height: 42px;
+          font-size: 1rem;
         }
       }
     </style>
@@ -189,7 +204,7 @@
       <div class="game-panel">
         <div class="game-header">
           <span class="game-title">◈ PACMAN · 3D NEON</span>
-          <span style="color: #0ff">⚡ WAKA WAKA</span>
+          <span style="color: #0ff; font-size: 0.65rem">⚡ ARCADE</span>
         </div>
         <div class="stats-row">
           <div class="stat">
@@ -199,45 +214,66 @@
             <span class="stat-value" id="lives">3</span><span>LIVES</span>
           </div>
           <div class="stat">
-            <span class="stat-value" id="level">1</span><span>LEVEL</span>
+            <span class="stat-value" id="level">1</span><span>LVL</span>
           </div>
-          <button id="startBtn">START GAME</button>
-          <button id="resetBtn">RESTART</button>
         </div>
         <div class="canvas-area">
           <canvas id="pacCanvas" width="504" height="552"></canvas>
         </div>
         <div class="dpad">
           <button id="upBtn">▲</button>
-          <button id="leftBtn">◀</button>
           <button id="downBtn">▼</button>
+          <button id="leftBtn">◀</button>
           <button id="rightBtn">▶</button>
         </div>
         <div
           style="
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.6rem;
+          "
+        >
+          <button id="startBtn">START</button>
+          <button id="resetBtn">RESET</button>
+        </div>
+        <div
+          style="
             text-align: center;
-            margin-top: 0.8rem;
-            font-size: 0.6rem;
+            margin-top: 0.6rem;
+            font-size: 0.55rem;
             color: #5e6f8d;
           "
         >
-          ◉ Arrow Keys / WASD to move | Touch D-Pad | Space to pause
+          ◉ TOUCH D-PAD | ARROWS / WASD | SPACE PAUSE
         </div>
       </div>
     </div>
 
     <script>
       (function () {
-        // ---------- CANVAS ----------
+        // CANVAS
         const canvas = document.getElementById("pacCanvas");
         const ctx = canvas.getContext("2d");
 
-        // ---------- GAME CONSTANTS ----------
+        // FIXED: Set canvas size properly
+        canvas.width = 504;
+        canvas.height = 552;
+
+        // GAME CONSTANTS
         const TILE_SIZE = 24;
         const COLS = 21;
         const ROWS = 23;
 
-        // Original map layout (P = pacman start, G = ghost start, . = pellet, o = power pellet)
+        // Direction vectors
+        const DIRS = [
+          { x: 0, y: -1 },
+          { x: 0, y: 1 },
+          { x: -1, y: 0 },
+          { x: 1, y: 0 },
+        ];
+
+        // Original map layout - PACMAN MAZE
         const RAW_MAP = [
           "#####################",
           "#........#........#.#",
@@ -264,15 +300,7 @@
           "                     ",
         ];
 
-        // Direction vectors
-        const DIRS = [
-          { x: 0, y: -1, name: "up" }, // up
-          { x: 0, y: 1, name: "down" }, // down
-          { x: -1, y: 0, name: "left" }, // left
-          { x: 1, y: 0, name: "right" }, // right
-        ];
-
-        // ---------- GAME STATE ----------
+        // GAME STATE
         let board = [];
         let pelletsTotal = 0;
         let score = 0;
@@ -280,7 +308,6 @@
         let level = 1;
         let gameRunning = false;
         let paused = false;
-        let animationId = null;
 
         // Pacman
         let pac = {
@@ -293,16 +320,14 @@
           speed: 2.2,
         };
 
-        // Ghosts array
+        // Ghosts
         let ghosts = [];
         const GHOST_COLORS = ["#ff3b3b", "#ffb86b", "#66d9ef", "#b38fff"];
 
-        // ---------- BFS PATHFINDING FOR GHOSTS ----------
-        function getTileFromPixel(px, py) {
-          return {
-            x: Math.floor(px / TILE_SIZE),
-            y: Math.floor(py / TILE_SIZE),
-          };
+        function updateUI() {
+          document.getElementById("score").innerText = score;
+          document.getElementById("lives").innerText = lives;
+          document.getElementById("level").innerText = level;
         }
 
         function isTileWalkable(tileX, tileY) {
@@ -312,68 +337,16 @@
           return cell !== "#";
         }
 
-        // BFS to find next direction towards target
-        function getNextDirectionBFS(startTile, targetTile, currentDir) {
-          if (!startTile || !targetTile) return currentDir;
-          if (startTile.x === targetTile.x && startTile.y === targetTile.y)
-            return currentDir;
-
-          const queue = [{ x: startTile.x, y: startTile.y, path: [] }];
-          const visited = new Set();
-          visited.add(`${startTile.x},${startTile.y}`);
-
-          while (queue.length > 0) {
-            const current = queue.shift();
-
-            for (const dir of DIRS) {
-              const nx = current.x + dir.x;
-              const ny = current.y + dir.y;
-              const key = `${nx},${ny}`;
-
-              if (nx === targetTile.x && ny === targetTile.y) {
-                // Found path, return first step direction
-                const firstStep =
-                  current.path.length > 0 ? current.path[0] : dir;
-                return firstStep;
-              }
-
-              if (!visited.has(key) && isTileWalkable(nx, ny)) {
-                visited.add(key);
-                const newPath = [...current.path, dir];
-                queue.push({ x: nx, y: ny, path: newPath });
-              }
-            }
-          }
-
-          // If no path found, try to continue in current direction or random
-          if (
-            isTileWalkable(
-              startTile.x + currentDir.x,
-              startTile.y + currentDir.y,
-            )
-          ) {
-            return currentDir;
-          }
-
-          // Random valid direction
-          const validDirs = DIRS.filter((dir) =>
-            isTileWalkable(startTile.x + dir.x, startTile.y + dir.y),
-          );
-          if (validDirs.length > 0) {
-            return validDirs[Math.floor(Math.random() * validDirs.length)];
-          }
-          return currentDir;
+        function updatePacmanTile() {
+          pac.tileX = Math.floor(pac.x / TILE_SIZE);
+          pac.tileY = Math.floor(pac.y / TILE_SIZE);
+          pac.tileX = Math.max(0, Math.min(COLS - 1, pac.tileX));
+          pac.tileY = Math.max(0, Math.min(ROWS - 1, pac.tileY));
         }
 
-        // ---------- HELPER FUNCTIONS ----------
-        function updateUI() {
-          document.getElementById("score").innerText = score;
-          document.getElementById("lives").innerText = lives;
-          document.getElementById("level").innerText = level;
-        }
-
-        // Initialize / reset level from raw map
+        // Initialize level
         function initLevel() {
+          // Deep copy the map
           board = RAW_MAP.map((row) => row.split(""));
           pelletsTotal = 0;
           ghosts = [];
@@ -411,72 +384,35 @@
             }
           }
           updateUI();
-        }
-
-        // Check wall collision at pixel position
-        function isWall(px, py) {
-          const r = Math.floor(py / TILE_SIZE);
-          const c = Math.floor(px / TILE_SIZE);
-          if (r < 0 || c < 0 || r >= ROWS || c >= COLS) return true;
-          return board[r][c] === "#";
+          draw(); // Force redraw
         }
 
         function isWalkable(px, py) {
-          return !isWall(px, py);
+          const r = Math.floor(py / TILE_SIZE);
+          const c = Math.floor(px / TILE_SIZE);
+          if (r < 0 || c < 0 || r >= ROWS || c >= COLS) return true;
+          return board[r][c] !== "#";
         }
 
-        // Update Pacman's tile position
-        function updatePacmanTile() {
-          pac.tileX = Math.floor(pac.x / TILE_SIZE);
-          pac.tileY = Math.floor(pac.y / TILE_SIZE);
-
-          // Clamp to valid range
-          pac.tileX = Math.max(0, Math.min(COLS - 1, pac.tileX));
-          pac.tileY = Math.max(0, Math.min(ROWS - 1, pac.tileY));
-        }
-
-        // Move pacman based on current direction
         function movePacman() {
-          // First, update tile position
           updatePacmanTile();
 
-          // Check if at center of a tile
           const centerX = pac.tileX * TILE_SIZE + TILE_SIZE / 2;
           const centerY = pac.tileY * TILE_SIZE + TILE_SIZE / 2;
           const atCenter =
             Math.abs(pac.x - centerX) < 1.5 && Math.abs(pac.y - centerY) < 1.5;
 
-          // Only allow direction change when at tile center
-          if (atCenter) {
-            // Try to apply buffered direction
-            if (pac.nextDir.x !== 0 || pac.nextDir.y !== 0) {
-              const testX = pac.tileX + pac.nextDir.x;
-              const testY = pac.tileY + pac.nextDir.y;
-              if (isTileWalkable(testX, testY)) {
-                pac.dir = { ...pac.nextDir };
-              }
-            }
-
-            // If no direction, try to continue current direction
-            if (pac.dir.x === 0 && pac.dir.y === 0) {
-              // Find first valid direction
-              for (const dir of DIRS) {
-                const testX = pac.tileX + dir.x;
-                const testY = pac.tileY + dir.y;
-                if (isTileWalkable(testX, testY)) {
-                  pac.dir = dir;
-                  break;
-                }
-              }
+          if (atCenter && (pac.nextDir.x !== 0 || pac.nextDir.y !== 0)) {
+            const testX = pac.tileX + pac.nextDir.x;
+            const testY = pac.tileY + pac.nextDir.y;
+            if (isTileWalkable(testX, testY)) {
+              pac.dir = { ...pac.nextDir };
             }
           }
 
-          // Move in current direction
           if (pac.dir.x !== 0 || pac.dir.y !== 0) {
             const newX = pac.x + pac.dir.x * pac.speed;
             const newY = pac.y + pac.dir.y * pac.speed;
-
-            // Check if next tile is walkable
             const nextTileX = Math.floor(newX / TILE_SIZE);
             const nextTileY = Math.floor(newY / TILE_SIZE);
 
@@ -484,23 +420,19 @@
               pac.x = newX;
               pac.y = newY;
             } else {
-              // Stop at wall and reset direction
               pac.dir = { x: 0, y: 0 };
-              // Snap to center of current tile
-              pac.x = pac.tileX * TILE_SIZE + TILE_SIZE / 2;
-              pac.y = pac.tileY * TILE_SIZE + TILE_SIZE / 2;
+              pac.x = centerX;
+              pac.y = centerY;
             }
           }
 
-          // Tunnel wrap (left/right edges)
+          // Tunnel wrap
           if (pac.x < -TILE_SIZE / 2) pac.x = COLS * TILE_SIZE + TILE_SIZE / 2;
           if (pac.x > COLS * TILE_SIZE + TILE_SIZE / 2) pac.x = -TILE_SIZE / 2;
 
-          // Final tile update
           updatePacmanTile();
         }
 
-        // Eat pellets
         function eatPellet() {
           const r = pac.tileY;
           const c = pac.tileX;
@@ -517,27 +449,55 @@
             board[r][c] = " ";
             pelletsTotal--;
             updateUI();
-            // Make all ghosts frightened
             ghosts.forEach((g) => {
               g.frightened = 400;
             });
           }
 
-          // Level up if no pellets left
           if (pelletsTotal === 0) {
             level++;
             initLevel();
           }
         }
 
-        // Move ghosts using BFS pathfinding
+        function getNextDirectionBFS(startTile, targetTile, currentDir) {
+          if (!startTile || !targetTile) return currentDir;
+          if (startTile.x === targetTile.x && startTile.y === targetTile.y)
+            return currentDir;
+
+          const queue = [{ x: startTile.x, y: startTile.y, path: [] }];
+          const visited = new Set();
+          visited.add(`${startTile.x},${startTile.y}`);
+
+          while (queue.length > 0) {
+            const current = queue.shift();
+            for (const dir of DIRS) {
+              const nx = current.x + dir.x;
+              const ny = current.y + dir.y;
+              const key = `${nx},${ny}`;
+
+              if (nx === targetTile.x && ny === targetTile.y) {
+                const firstStep =
+                  current.path.length > 0 ? current.path[0] : dir;
+                return firstStep;
+              }
+
+              if (!visited.has(key) && isTileWalkable(nx, ny)) {
+                visited.add(key);
+                const newPath = [...current.path, dir];
+                queue.push({ x: nx, y: ny, path: newPath });
+              }
+            }
+          }
+          return currentDir;
+        }
+
         function moveGhosts() {
           const pacTile = { x: pac.tileX, y: pac.tileY };
 
           for (let g of ghosts) {
             if (g.frightened > 0) {
               g.frightened--;
-              // Frightened mode: move randomly
               if (Math.random() < 0.05) {
                 const validDirs = DIRS.filter((dir) => {
                   const nx = g.tileX + dir.x;
@@ -545,21 +505,16 @@
                   return isTileWalkable(nx, ny);
                 });
                 if (validDirs.length > 0) {
-                  const randomDir =
+                  g.dir =
                     validDirs[Math.floor(Math.random() * validDirs.length)];
-                  g.dir = randomDir;
                 }
               }
             } else {
-              // Chase Pacman using BFS
               const ghostTile = { x: g.tileX, y: g.tileY };
               const nextDir = getNextDirectionBFS(ghostTile, pacTile, g.dir);
-              if (nextDir) {
-                g.dir = nextDir;
-              }
+              if (nextDir) g.dir = nextDir;
             }
 
-            // Move ghost
             const newX = g.x + g.dir.x * g.speed;
             const newY = g.y + g.dir.y * g.speed;
 
@@ -568,29 +523,23 @@
               g.y = newY;
             }
 
-            // Update ghost tile position
             g.tileX = Math.floor(g.x / TILE_SIZE);
             g.tileY = Math.floor(g.y / TILE_SIZE);
             g.tileX = Math.max(0, Math.min(COLS - 1, g.tileX));
             g.tileY = Math.max(0, Math.min(ROWS - 1, g.tileY));
 
-            // Tunnel wrap for ghosts
             if (g.x < -TILE_SIZE / 2) g.x = COLS * TILE_SIZE + TILE_SIZE / 2;
             if (g.x > COLS * TILE_SIZE + TILE_SIZE / 2) g.x = -TILE_SIZE / 2;
           }
         }
 
-        // Check collision between pacman and ghosts
         function checkCollisions() {
-          for (let i = 0; i < ghosts.length; i++) {
-            const g = ghosts[i];
+          for (let g of ghosts) {
             const dist = Math.hypot(g.x - pac.x, g.y - pac.y);
             if (dist < TILE_SIZE * 0.65) {
               if (g.frightened > 0) {
-                // Eat ghost
                 score += 200;
                 updateUI();
-                // Respawn ghost at home
                 g.x = g.homeX;
                 g.y = g.homeY;
                 g.tileX = g.homeTileX;
@@ -598,14 +547,11 @@
                 g.frightened = 0;
                 g.dir = { x: 1, y: 0 };
               } else {
-                // Lose life
                 lives--;
                 updateUI();
                 if (lives <= 0) {
                   gameRunning = false;
-                  paused = false;
                 } else {
-                  // Reset positions
                   initLevel();
                 }
                 return;
@@ -614,12 +560,11 @@
           }
         }
 
-        // ---------- DRAWING (Neon style) ----------
+        // DRAW FUNCTION - FIXED
         function draw() {
-          const w = canvas.width;
-          const h = canvas.height;
+          // Clear canvas
           ctx.fillStyle = "#03050b";
-          ctx.fillRect(0, 0, w, h);
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
 
           // Draw maze and pellets
           for (let r = 0; r < ROWS; r++) {
@@ -629,13 +574,15 @@
               const y = r * TILE_SIZE;
 
               if (ch === "#") {
+                // Wall
                 ctx.fillStyle = "#111a2a";
                 ctx.fillRect(x, y, TILE_SIZE - 1, TILE_SIZE - 1);
                 ctx.strokeStyle = "#0ff";
                 ctx.strokeRect(x + 0.5, y + 0.5, TILE_SIZE - 2, TILE_SIZE - 2);
               } else if (ch === ".") {
+                // Small pellet
                 ctx.fillStyle = "#ffea00";
-                ctx.shadowBlur = 6;
+                ctx.shadowBlur = 4;
                 ctx.beginPath();
                 ctx.arc(
                   x + TILE_SIZE / 2,
@@ -646,8 +593,9 @@
                 );
                 ctx.fill();
               } else if (ch === "o") {
+                // Power pellet
                 ctx.fillStyle = "#f0f";
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 6;
                 ctx.beginPath();
                 ctx.arc(
                   x + TILE_SIZE / 2,
@@ -666,19 +614,19 @@
           // Draw ghosts
           for (let g of ghosts) {
             ctx.fillStyle = g.frightened > 0 ? "#00ffff" : g.color;
-            ctx.shadowBlur = 8;
+            ctx.shadowBlur = 5;
             ctx.beginPath();
             ctx.arc(g.x, g.y, TILE_SIZE * 0.38, 0, Math.PI * 2);
             ctx.fill();
-            // Ghost eyes
-            ctx.fillStyle = "#fff";
+            // Eyes
+            ctx.fillStyle = "#ffffff";
             ctx.beginPath();
             ctx.arc(g.x - 6, g.y - 3, 4, 0, Math.PI * 2);
             ctx.fill();
             ctx.beginPath();
             ctx.arc(g.x + 6, g.y - 3, 4, 0, Math.PI * 2);
             ctx.fill();
-            ctx.fillStyle = "#000";
+            ctx.fillStyle = "#000000";
             ctx.beginPath();
             ctx.arc(g.x - 5, g.y - 4, 2, 0, Math.PI * 2);
             ctx.fill();
@@ -687,9 +635,9 @@
             ctx.fill();
           }
 
-          // Draw Pacman with mouth animation
+          // Draw Pacman
           ctx.fillStyle = "#ffea00";
-          ctx.shadowBlur = 10;
+          ctx.shadowBlur = 8;
           const angle = (Date.now() * 0.012) % (Math.PI * 2);
           const mouthAngle = 0.3 + Math.sin(angle) * 0.2;
           let dirAngle = 0;
@@ -710,26 +658,48 @@
           ctx.fill();
           ctx.shadowBlur = 0;
 
-          // Game over / pause message
+          // Messages
           if (!gameRunning && lives <= 0) {
-            ctx.fillStyle = "rgba(0,0,0,0.7)";
-            ctx.fillRect(0, h / 2 - 40, w, 80);
+            ctx.fillStyle = "rgba(0,0,0,0.8)";
+            ctx.fillRect(0, canvas.height / 2 - 40, canvas.width, 70);
             ctx.fillStyle = "#0ff";
             ctx.font = "bold 18px monospace";
-            ctx.fillText("GAME OVER", w / 2 - 60, h / 2);
+            ctx.fillText("GAME OVER", canvas.width / 2 - 60, canvas.height / 2);
             ctx.font = "12px monospace";
-            ctx.fillText("PRESS START", w / 2 - 45, h / 2 + 30);
-          } else if (paused && gameRunning) {
-            ctx.fillStyle = "rgba(0,0,0,0.7)";
-            ctx.fillRect(0, h / 2 - 30, w, 60);
+            ctx.fillText(
+              "PRESS START",
+              canvas.width / 2 - 45,
+              canvas.height / 2 + 28,
+            );
+          } else if (!gameRunning && lives > 0) {
+            ctx.fillStyle = "rgba(0,0,0,0.8)";
+            ctx.fillRect(0, canvas.height / 2 - 35, canvas.width, 60);
             ctx.fillStyle = "#0ff";
             ctx.font = "bold 18px monospace";
-            ctx.fillText("PAUSED", w / 2 - 40, h / 2 + 5);
+            ctx.fillText("PACMAN", canvas.width / 2 - 45, canvas.height / 2);
+            ctx.font = "12px monospace";
+            ctx.fillText(
+              "PRESS START",
+              canvas.width / 2 - 45,
+              canvas.height / 2 + 28,
+            );
+          } else if (paused && gameRunning) {
+            ctx.fillStyle = "rgba(0,0,0,0.8)";
+            ctx.fillRect(0, canvas.height / 2 - 30, canvas.width, 50);
+            ctx.fillStyle = "#0ff";
+            ctx.font = "bold 18px monospace";
+            ctx.fillText(
+              "PAUSED",
+              canvas.width / 2 - 40,
+              canvas.height / 2 + 5,
+            );
           }
         }
 
-        // ---------- GAME LOOP ----------
+        // GAME LOOP
         let lastTimestamp = 0;
+        let lastMoveTime = 0;
+
         function gameLoop(timestamp) {
           if (!lastTimestamp) lastTimestamp = timestamp;
           const delta = Math.min(33, timestamp - lastTimestamp);
@@ -743,29 +713,17 @@
           }
 
           draw();
-          animationId = requestAnimationFrame(gameLoop);
+          requestAnimationFrame(gameLoop);
         }
 
-        // ---------- CONTROLS ----------
+        // CONTROLS
         function setDirection(x, y) {
           if (!gameRunning) return;
-          // Always allow setting next direction
           pac.nextDir = { x, y };
-
-          // If currently stopped, try to move immediately
-          if (pac.dir.x === 0 && pac.dir.y === 0) {
-            const testX = pac.tileX + x;
-            const testY = pac.tileY + y;
-            if (isTileWalkable(testX, testY)) {
-              pac.dir = { x, y };
-              pac.nextDir = { x, y };
-            }
-          }
         }
 
         function handleKeyDown(e) {
           const key = e.key.toLowerCase();
-          // Prevent arrow keys and WASD from scrolling
           if (
             key === "arrowup" ||
             key === "arrowdown" ||
@@ -781,7 +739,6 @@
             e.preventDefault();
           }
 
-          // Start game on any movement key if not running
           if (
             !gameRunning &&
             (key === "arrowup" ||
@@ -796,13 +753,10 @@
             startGame();
           }
 
-          // Direction controls
           if (key === "arrowleft" || key === "a") setDirection(-1, 0);
           if (key === "arrowright" || key === "d") setDirection(1, 0);
           if (key === "arrowup" || key === "w") setDirection(0, -1);
           if (key === "arrowdown" || key === "s") setDirection(0, 1);
-
-          // Pause
           if (key === " " || key === "p") {
             if (gameRunning) paused = !paused;
           }
@@ -819,18 +773,11 @@
         }
 
         function resetGame() {
-          score = 0;
-          lives = 3;
-          level = 1;
-          gameRunning = true;
-          paused = false;
-          initLevel();
-          updateUI();
+          startGame();
         }
 
-        // ---------- EVENT LISTENERS ----------
+        // EVENT LISTENERS
         window.addEventListener("keydown", handleKeyDown);
-
         document
           .getElementById("startBtn")
           .addEventListener("click", startGame);
@@ -839,31 +786,27 @@
           .addEventListener("click", resetGame);
 
         // Touch D-pad
-        document
-          .getElementById("upBtn")
-          .addEventListener("click", () => setDirection(0, -1));
-        document
-          .getElementById("downBtn")
-          .addEventListener("click", () => setDirection(0, 1));
-        document
-          .getElementById("leftBtn")
-          .addEventListener("click", () => setDirection(-1, 0));
-        document
-          .getElementById("rightBtn")
-          .addEventListener("click", () => setDirection(1, 0));
-
-        // Also start game via touch if not running
-        const dpadBtns = ["upBtn", "downBtn", "leftBtn", "rightBtn"];
-        dpadBtns.forEach((id) => {
-          document.getElementById(id).addEventListener("click", () => {
-            if (!gameRunning) startGame();
-          });
+        document.getElementById("upBtn").addEventListener("click", () => {
+          setDirection(0, -1);
+          if (!gameRunning) startGame();
+        });
+        document.getElementById("downBtn").addEventListener("click", () => {
+          setDirection(0, 1);
+          if (!gameRunning) startGame();
+        });
+        document.getElementById("leftBtn").addEventListener("click", () => {
+          setDirection(-1, 0);
+          if (!gameRunning) startGame();
+        });
+        document.getElementById("rightBtn").addEventListener("click", () => {
+          setDirection(1, 0);
+          if (!gameRunning) startGame();
         });
 
-        // Initialize and start loop
+        // Initialize and start
         initLevel();
         updateUI();
-        animationId = requestAnimationFrame(gameLoop);
+        gameLoop(0);
       })();
     </script>
   </body>
