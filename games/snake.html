@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>Mcyor · SNAKE | 3D NEON</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        background: radial-gradient(circle at 20% 30%, #03050b, #000);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .game-container {
+        width: 100%;
+        max-width: 600px;
+      }
+      .game-panel {
+        background: rgba(5, 8, 18, 0.85);
+        backdrop-filter: blur(12px);
+        border-radius: 2rem;
+        padding: 1rem;
+        border: 1px solid #0ff;
+      }
+      .game-title {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 1.5rem;
+        background: linear-gradient(135deg, #0ff, #f0f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .stats {
+        display: flex;
+        justify-content: space-between;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 60px;
+        padding: 0.5rem 1rem;
+        margin: 1rem 0;
+      }
+      .stat {
+        font-family: "JetBrains Mono", monospace;
+        color: #0ff;
+      }
+      .stat span {
+        font-size: 1.3rem;
+        font-weight: bold;
+      }
+      button {
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid #0ff;
+        padding: 0.4rem 1rem;
+        border-radius: 40px;
+        color: #0ff;
+        cursor: pointer;
+      }
+      canvas {
+        width: 100%;
+        height: auto;
+        background: #000;
+        border-radius: 16px;
+      }
+      .dpad {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+      .dpad button {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+        border-radius: 20px;
+      }
+      .dpad button:active {
+        background: #0ff;
+        color: #000;
+        transform: scale(0.95);
+      }
+      @media (max-width: 500px) {
+        .dpad button {
+          width: 50px;
+          height: 50px;
+        }
+        .game-title {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-container">
+      <div class="game-panel">
+        <div class="game-title">◈ SNAKE · 3D NEON</div>
+        <div class="stats">
+          <div class="stat">SCORE: <span id="snakeScore">0</span></div>
+          <div class="stat">HIGH: <span id="snakeHigh">0</span></div>
+          <button id="snakeStart">START</button>
+        </div>
+        <canvas id="snakeCanvas" width="600" height="600"></canvas>
+        <div class="dpad">
+          <button id="snakeUp">▲</button><button id="snakeLeft">◀</button
+          ><button id="snakeDown">▼</button><button id="snakeRight">▶</button>
+        </div>
+        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.6rem">
+          Arrow Keys / WASD / Touch D-Pad
+        </div>
+      </div>
+    </div>
+    <script>
+      const canvas = document.getElementById("snakeCanvas"),
+        ctx = canvas.getContext("2d");
+      let size = 20,
+        cols = 30,
+        rows = 30,
+        snake = [
+          [15, 15],
+          [14, 15],
+          [13, 15],
+        ],
+        dir = [1, 0],
+        food = [10, 10],
+        score = 0,
+        high = localStorage.getItem("snakeHigh") || 0,
+        gameRunning = false;
+      document.getElementById("snakeHigh").innerText = high;
+      function randomFood() {
+        let f;
+        do {
+          f = [
+            Math.floor(Math.random() * cols),
+            Math.floor(Math.random() * rows),
+          ];
+        } while (snake.some((s) => s[0] === f[0] && s[1] === f[1]));
+        food = f;
+      }
+      let lastTime = 0,
+        moveInterval = 120,
+        acc = 0;
+      function update(ts) {
+        if (!gameRunning) {
+          draw();
+          requestAnimationFrame(update);
+          return;
+        }
+        if (!lastTime) lastTime = ts;
+        let elapsed = ts - lastTime;
+        lastTime = ts;
+        acc += elapsed;
+        if (acc >= moveInterval) {
+          acc = 0;
+          let head = [snake[0][0] + dir[0], snake[0][1] + dir[1]];
+          if (
+            head[0] < 0 ||
+            head[0] >= cols ||
+            head[1] < 0 ||
+            head[1] >= rows ||
+            snake.some((s) => s[0] === head[0] && s[1] === head[1])
+          ) {
+            gameRunning = false;
+            draw();
+            return;
+          }
+          snake.unshift(head);
+          if (head[0] === food[0] && head[1] === food[1]) {
+            score += 10;
+            document.getElementById("snakeScore").innerText = score;
+            if (score > high) {
+              high = score;
+              localStorage.setItem("snakeHigh", high);
+              document.getElementById("snakeHigh").innerText = high;
+            }
+            randomFood();
+          } else snake.pop();
+        }
+        draw();
+        requestAnimationFrame(update);
+      }
+      function draw() {
+        ctx.fillStyle = "#03050b";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < snake.length; i++) {
+          let x = snake[i][0] * size,
+            y = snake[i][1] * size;
+          ctx.fillStyle = i === 0 ? "#0ff" : "#0f6";
+          ctx.fillRect(x + 1, y + 1, size - 2, size - 2);
+        }
+        ctx.fillStyle = "#f0f";
+        ctx.fillRect(
+          food[0] * size + 2,
+          food[1] * size + 2,
+          size - 4,
+          size - 4,
+        );
+        if (!gameRunning) {
+          ctx.fillStyle = "#0ff";
+          ctx.font = "bold 16px monospace";
+          ctx.fillText("PRESS START", canvas.width / 2 - 70, canvas.height / 2);
+        }
+      }
+      function setDir(newDir) {
+        if (newDir[0] === -dir[0] && newDir[1] === -dir[1]) return;
+        dir = newDir;
+      }
+      window.addEventListener("keydown", (e) => {
+        let k = e.key.toLowerCase();
+        e.preventDefault();
+        if (k === "arrowup" || k === "w") setDir([0, -1]);
+        if (k === "arrowdown" || k === "s") setDir([0, 1]);
+        if (k === "arrowleft" || k === "a") setDir([-1, 0]);
+        if (k === "arrowright" || k === "d") setDir([1, 0]);
+        if (
+          !gameRunning &&
+          (k === "arrowup" ||
+            k === "arrowdown" ||
+            k === "arrowleft" ||
+            k === "arrowright" ||
+            k === "w" ||
+            k === "a" ||
+            k === "s" ||
+            k === "d")
+        ) {
+          snake = [
+            [15, 15],
+            [14, 15],
+            [13, 15],
+          ];
+          dir = [1, 0];
+          score = 0;
+          document.getElementById("snakeScore").innerText = "0";
+          randomFood();
+          gameRunning = true;
+          lastTime = 0;
+          acc = 0;
+        }
+      });
+      document.getElementById("snakeStart").onclick = () => {
+        snake = [
+          [15, 15],
+          [14, 15],
+          [13, 15],
+        ];
+        dir = [1, 0];
+        score = 0;
+        document.getElementById("snakeScore").innerText = "0";
+        randomFood();
+        gameRunning = true;
+        lastTime = 0;
+        acc = 0;
+      };
+      document.getElementById("snakeUp").onclick = () => setDir([0, -1]);
+      document.getElementById("snakeDown").onclick = () => setDir([0, 1]);
+      document.getElementById("snakeLeft").onclick = () => setDir([-1, 0]);
+      document.getElementById("snakeRight").onclick = () => setDir([1, 0]);
+      randomFood();
+      draw();
+      requestAnimationFrame(update);
+    </script>
+  </body>
+</html>

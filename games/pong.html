@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>Mcyor · PONG | 3D NEON</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        background: radial-gradient(circle at 20% 30%, #03050b, #000);
+        font-family: "DM Sans", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        position: relative;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+        animation: gridFloat 20s infinite alternate;
+      }
+      @keyframes gridFloat {
+        0% {
+          transform: translateZ(0) rotateX(0deg);
+          opacity: 0.3;
+        }
+        100% {
+          transform: translateZ(10px) rotateX(2deg);
+          opacity: 0.7;
+        }
+      }
+      .game-container {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 900px;
+        perspective: 1200px;
+      }
+      .game-panel {
+        background: rgba(5, 8, 18, 0.85);
+        backdrop-filter: blur(12px);
+        border-radius: 2rem;
+        padding: 1.2rem;
+        border: 1px solid rgba(0, 255, 255, 0.4);
+        box-shadow:
+          0 25px 45px -12px black,
+          0 0 0 2px rgba(0, 255, 255, 0.2) inset,
+          0 0 18px rgba(0, 255, 255, 0.6);
+      }
+      .game-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #0ff;
+        padding-bottom: 0.7rem;
+      }
+      .game-title {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 1.5rem;
+        background: linear-gradient(135deg, #0ff, #f0f);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .stats-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 60px;
+        padding: 0.5rem 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+      }
+      .score-display {
+        font-family: "Syne", sans-serif;
+        font-size: 2rem;
+        font-weight: 800;
+        color: #0ff;
+        text-shadow: 0 0 8px #0ff;
+        letter-spacing: 0.1em;
+      }
+      button {
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid #0ff;
+        padding: 0.4rem 0.8rem;
+        border-radius: 40px;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 600;
+        font-size: 0.7rem;
+        color: #0ff;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      button:hover,
+      button:active {
+        background: #0ff;
+        color: #000;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      }
+      .canvas-area {
+        background: rgba(0, 0, 0, 0.55);
+        border-radius: 24px;
+        padding: 0.5rem;
+        border: 1px solid rgba(0, 255, 255, 0.4);
+        display: flex;
+        justify-content: center;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 16px;
+        box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+        background: #000;
+        cursor: pointer;
+      }
+      .touch-controls {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+      .touch-btn {
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid #0ff;
+        padding: 0.8rem 1.5rem;
+        border-radius: 40px;
+        color: #0ff;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.05s linear;
+        min-width: 80px;
+        text-align: center;
+      }
+      .touch-btn:active {
+        background: #0ff;
+        color: #000;
+        transform: scale(0.95);
+      }
+      @media (max-width: 600px) {
+        .game-title {
+          font-size: 1rem;
+        }
+        .score-display {
+          font-size: 1.2rem;
+        }
+        .touch-btn {
+          padding: 0.5rem 1rem;
+          font-size: 0.9rem;
+          min-width: 70px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-container">
+      <div class="game-panel">
+        <div class="game-header">
+          <span class="game-title">◈ PONG · 3D NEON</span>
+          <span style="color: #0ff">⚡ CLASSIC ARCADE</span>
+        </div>
+        <div class="stats-row">
+          <div class="score-display" id="pongScore">0 - 0</div>
+          <button id="pongRestart">RESTART</button>
+        </div>
+        <div class="canvas-area">
+          <canvas id="pongCanvas" width="800" height="450"></canvas>
+        </div>
+        <div class="touch-controls">
+          <div class="touch-btn" id="paddleUp">▲ UP</div>
+          <div class="touch-btn" id="paddleDown">▼ DOWN</div>
+          <div class="touch-btn" id="serveBtn">⏵ SERVE</div>
+        </div>
+        <div
+          style="
+            text-align: center;
+            margin-top: 0.8rem;
+            font-size: 0.6rem;
+            color: #5e6f8d;
+          "
+        >
+          ◉ W/S or UP/DOWN to move | SPACE to serve | Touch buttons for mobile
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        // CANVAS
+        const canvas = document.getElementById("pongCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // GAME DIMENSIONS
+        let W = 800;
+        let H = 450;
+
+        // GAME STATE
+        let gameRunning = false;
+        let leftScore = 0;
+        let rightScore = 0;
+
+        // PADDLE SETTINGS
+        const PADDLE_WIDTH = 12;
+        const PADDLE_HEIGHT = 90;
+        let leftPaddleY = H / 2 - PADDLE_HEIGHT / 2;
+        let rightPaddleY = H / 2 - PADDLE_HEIGHT / 2;
+        const PADDLE_SPEED = 7;
+
+        // BALL SETTINGS
+        let ball = {
+          x: W / 2,
+          y: H / 2,
+          radius: 8,
+          vx: 0,
+          vy: 0,
+          speed: 5,
+        };
+
+        // CONTROLS
+        let upPressed = false;
+        let downPressed = false;
+
+        // Touch control states
+        let touchUp = false;
+        let touchDown = false;
+
+        // AI Difficulty modifier (0.3 = easy, 0.7 = normal, 0.9 = hard)
+        let aiDifficulty = 0.5;
+
+        // ----- RESIZE CANVAS -----
+        function resizeCanvas() {
+          const container = canvas.parentElement;
+          const maxWidth = Math.min(
+            container.clientWidth - 20,
+            window.innerWidth - 80,
+            800,
+          );
+          const aspect = 800 / 450;
+          const newWidth = maxWidth;
+          const newHeight = newWidth / aspect;
+
+          canvas.style.width = `${newWidth}px`;
+          canvas.style.height = `${newHeight}px`;
+          canvas.width = 800;
+          canvas.height = 450;
+
+          W = 800;
+          H = 450;
+
+          // Adjust paddle positions
+          leftPaddleY = Math.min(H - PADDLE_HEIGHT, Math.max(0, leftPaddleY));
+          rightPaddleY = Math.min(H - PADDLE_HEIGHT, Math.max(0, rightPaddleY));
+
+          // Adjust ball position if needed
+          if (!gameRunning) {
+            ball.x = W / 2;
+            ball.y = H / 2;
+          }
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        // ----- RESET BALL FOR NEW ROUND -----
+        function resetBall(serveToRight = false) {
+          ball.x = W / 2;
+          ball.y = H / 2;
+          // Random angle between -30 and 30 degrees
+          const angle = ((Math.random() - 0.5) * Math.PI) / 2.5;
+          const direction = serveToRight ? 1 : -1;
+          ball.vx = direction * ball.speed * Math.cos(angle);
+          ball.vy = ball.speed * Math.sin(angle);
+
+          // Ensure minimum speed
+          if (Math.abs(ball.vx) < 2) ball.vx = direction * 2.5;
+          if (Math.abs(ball.vy) < 1.5)
+            ball.vy = 1.5 * (Math.random() > 0.5 ? 1 : -1);
+        }
+
+        // ----- START GAME / SERVE -----
+        function serve() {
+          gameRunning = true;
+          // Serve to random direction
+          resetBall(Math.random() > 0.5);
+        }
+
+        // ----- UPDATE SCORE DISPLAY -----
+        function updateScoreDisplay() {
+          document.getElementById("pongScore").innerText =
+            `${leftScore} - ${rightScore}`;
+        }
+
+        // ----- RESET FULL GAME -----
+        function resetGame() {
+          leftScore = 0;
+          rightScore = 0;
+          leftPaddleY = H / 2 - PADDLE_HEIGHT / 2;
+          rightPaddleY = H / 2 - PADDLE_HEIGHT / 2;
+          updateScoreDisplay();
+          gameRunning = false;
+          ball.x = W / 2;
+          ball.y = H / 2;
+          ball.vx = 0;
+          ball.vy = 0;
+          draw();
+        }
+
+        // ----- UPDATE GAME PHYSICS -----
+        function updateGame() {
+          if (!gameRunning) return;
+
+          // FIX 1: Player movement (left paddle) using keyboard
+          if (upPressed || touchUp) {
+            leftPaddleY -= PADDLE_SPEED;
+            if (leftPaddleY < 0) leftPaddleY = 0;
+          }
+          if (downPressed || touchDown) {
+            leftPaddleY += PADDLE_SPEED;
+            if (leftPaddleY > H - PADDLE_HEIGHT)
+              leftPaddleY = H - PADDLE_HEIGHT;
+          }
+
+          // FIX 2: AI movement for right paddle (smooth tracking)
+          const ballCenter = ball.y;
+          const paddleCenter = rightPaddleY + PADDLE_HEIGHT / 2;
+          const error = ballCenter - paddleCenter;
+          // AI follows the ball with difficulty modifier
+          rightPaddleY += error * aiDifficulty;
+          rightPaddleY = Math.min(H - PADDLE_HEIGHT, Math.max(0, rightPaddleY));
+
+          // Move ball
+          ball.x += ball.vx;
+          ball.y += ball.vy;
+
+          // FIX 3: Ball collision with top and bottom walls
+          if (ball.y - ball.radius < 0) {
+            ball.y = ball.radius;
+            ball.vy = -ball.vy;
+          }
+          if (ball.y + ball.radius > H) {
+            ball.y = H - ball.radius;
+            ball.vy = -ball.vy;
+          }
+
+          // FIX 4: Ball collision with LEFT paddle
+          if (ball.x - ball.radius < PADDLE_WIDTH + 5) {
+            if (ball.y > leftPaddleY && ball.y < leftPaddleY + PADDLE_HEIGHT) {
+              // Calculate hit position relative to paddle center (-1 to 1)
+              const hitPos =
+                (ball.y - (leftPaddleY + PADDLE_HEIGHT / 2)) /
+                (PADDLE_HEIGHT / 2);
+              // Limit hit angle to prevent extreme angles
+              const angle = (hitPos * Math.PI) / 3;
+
+              // Reverse X direction and adjust angle
+              ball.vx = Math.abs(ball.vx);
+              ball.vx = ball.speed * Math.cos(angle);
+              ball.vy = ball.speed * Math.sin(angle);
+
+              // Add slight speed increase on each hit
+              ball.vx *= 1.02;
+              ball.vy *= 1.02;
+
+              // Move ball outside paddle to prevent multiple collisions
+              ball.x = PADDLE_WIDTH + 5 + ball.radius;
+
+              // Limit maximum speed
+              const maxSpeed = 12;
+              if (Math.abs(ball.vx) > maxSpeed)
+                ball.vx = ball.vx > 0 ? maxSpeed : -maxSpeed;
+              if (Math.abs(ball.vy) > maxSpeed)
+                ball.vy = ball.vy > 0 ? maxSpeed : -maxSpeed;
+            }
+          }
+
+          // FIX 5: Ball collision with RIGHT paddle
+          if (ball.x + ball.radius > W - PADDLE_WIDTH - 5) {
+            if (
+              ball.y > rightPaddleY &&
+              ball.y < rightPaddleY + PADDLE_HEIGHT
+            ) {
+              // Calculate hit position relative to paddle center (-1 to 1)
+              const hitPos =
+                (ball.y - (rightPaddleY + PADDLE_HEIGHT / 2)) /
+                (PADDLE_HEIGHT / 2);
+              // Limit hit angle
+              const angle = (hitPos * Math.PI) / 3;
+
+              // Reverse X direction and adjust angle
+              ball.vx = -Math.abs(ball.vx);
+              ball.vx = -ball.speed * Math.cos(angle);
+              ball.vy = ball.speed * Math.sin(angle);
+
+              // Add slight speed increase
+              ball.vx *= 1.02;
+              ball.vy *= 1.02;
+
+              // Move ball outside paddle
+              ball.x = W - PADDLE_WIDTH - 5 - ball.radius;
+
+              // Limit maximum speed
+              const maxSpeed = 12;
+              if (Math.abs(ball.vx) > maxSpeed)
+                ball.vx = ball.vx > 0 ? maxSpeed : -maxSpeed;
+              if (Math.abs(ball.vy) > maxSpeed)
+                ball.vy = ball.vy > 0 ? maxSpeed : -maxSpeed;
+            }
+          }
+
+          // FIX 6: Score points when ball passes paddles
+          if (ball.x - ball.radius < 0) {
+            // Right player scores
+            rightScore++;
+            updateScoreDisplay();
+            gameRunning = false;
+            resetBall(true);
+            draw();
+            return;
+          }
+
+          if (ball.x + ball.radius > W) {
+            // Left player scores
+            leftScore++;
+            updateScoreDisplay();
+            gameRunning = false;
+            resetBall(false);
+            draw();
+            return;
+          }
+        }
+
+        // ----- DRAW EVERYTHING (Neon Style) -----
+        function draw() {
+          // Clear background
+          ctx.fillStyle = "#03050b";
+          ctx.fillRect(0, 0, W, H);
+
+          // Draw center dashed line (neon style)
+          ctx.strokeStyle = "#0ff";
+          ctx.shadowBlur = 4;
+          ctx.setLineDash([15, 20]);
+          ctx.beginPath();
+          ctx.moveTo(W / 2, 0);
+          ctx.lineTo(W / 2, H);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // Draw left paddle
+          ctx.fillStyle = "#0ff";
+          ctx.shadowBlur = 8;
+          ctx.fillRect(5, leftPaddleY, PADDLE_WIDTH, PADDLE_HEIGHT);
+
+          // Draw right paddle
+          ctx.fillStyle = "#f0f";
+          ctx.fillRect(
+            W - PADDLE_WIDTH - 5,
+            rightPaddleY,
+            PADDLE_WIDTH,
+            PADDLE_HEIGHT,
+          );
+
+          // Draw ball with glow
+          ctx.fillStyle = "#ffea00";
+          ctx.beginPath();
+          ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Draw scores on the wall (neon text)
+          ctx.font = `bold ${Math.min(40, W / 12)}px "JetBrains Mono", monospace`;
+          ctx.fillStyle = "#0ff";
+          ctx.shadowBlur = 10;
+          ctx.fillText(leftScore.toString(), W / 3, 50);
+          ctx.fillStyle = "#f0f";
+          ctx.fillText(rightScore.toString(), (W * 2) / 3, 50);
+
+          ctx.shadowBlur = 0;
+
+          // Draw serve message if game not running
+          if (!gameRunning) {
+            ctx.fillStyle = "rgba(0,0,0,0.7)";
+            ctx.fillRect(0, H / 2 - 40, W, 80);
+            ctx.fillStyle = "#0ff";
+            ctx.font = "bold 18px monospace";
+            ctx.fillText("PRESS SPACE or SERVE", W / 2 - 130, H / 2 + 5);
+          }
+        }
+
+        // ----- KEYBOARD CONTROLS -----
+        function handleKeyDown(e) {
+          const key = e.key.toLowerCase();
+
+          // Prevent page scrolling
+          if (
+            key === "arrowup" ||
+            key === "arrowdown" ||
+            key === "w" ||
+            key === "s" ||
+            key === " "
+          ) {
+            e.preventDefault();
+          }
+
+          // Player 1 movement (left paddle)
+          if (key === "arrowup" || key === "w") {
+            upPressed = true;
+          }
+          if (key === "arrowdown" || key === "s") {
+            downPressed = true;
+          }
+
+          // Serve / Start
+          if (key === " ") {
+            if (!gameRunning) {
+              serve();
+            }
+          }
+        }
+
+        function handleKeyUp(e) {
+          const key = e.key.toLowerCase();
+          if (key === "arrowup" || key === "w") {
+            upPressed = false;
+          }
+          if (key === "arrowdown" || key === "s") {
+            downPressed = false;
+          }
+        }
+
+        // ----- TOUCH CONTROLS (continuous movement) -----
+        function initTouchControls() {
+          const upBtn = document.getElementById("paddleUp");
+          const downBtn = document.getElementById("paddleDown");
+          const serveBtn = document.getElementById("serveBtn");
+
+          // Up button - continuous
+          upBtn.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            touchUp = true;
+          });
+          upBtn.addEventListener("touchend", (e) => {
+            e.preventDefault();
+            touchUp = false;
+          });
+          upBtn.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            touchUp = true;
+          });
+          upBtn.addEventListener("mouseup", (e) => {
+            e.preventDefault();
+            touchUp = false;
+          });
+
+          // Down button - continuous
+          downBtn.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            touchDown = true;
+          });
+          downBtn.addEventListener("touchend", (e) => {
+            e.preventDefault();
+            touchDown = false;
+          });
+          downBtn.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            touchDown = true;
+          });
+          downBtn.addEventListener("mouseup", (e) => {
+            e.preventDefault();
+            touchDown = false;
+          });
+
+          // Serve button
+          serveBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (!gameRunning) serve();
+          });
+          serveBtn.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            if (!gameRunning) serve();
+          });
+        }
+
+        // ----- GAME LOOP -----
+        function gameLoop() {
+          updateGame();
+          draw();
+          requestAnimationFrame(gameLoop);
+        }
+
+        // ----- EVENT LISTENERS -----
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
+
+        document
+          .getElementById("pongRestart")
+          .addEventListener("click", resetGame);
+
+        // Initialize touch controls
+        initTouchControls();
+
+        // Set AI difficulty (can be adjusted)
+        const diffSelect = document.createElement("select");
+        diffSelect.style.cssText =
+          "background:rgba(0,0,0,0.7); border:1px solid #0ff; border-radius:40px; color:#0ff; padding:0.3rem 0.8rem; font-size:0.7rem; margin-left:0.5rem;";
+        diffSelect.innerHTML =
+          '<option value="0.3">EASY</option><option value="0.5" selected>NORMAL</option><option value="0.8">HARD</option>';
+        diffSelect.onchange = (e) => {
+          aiDifficulty = parseFloat(e.target.value);
+        };
+        document.querySelector(".stats-row").appendChild(diffSelect);
+
+        // Start game loop
+        gameLoop();
+
+        // Initial draw
+        draw();
+      })();
+    </script>
+  </body>
+</html>
